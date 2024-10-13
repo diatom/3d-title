@@ -1,0 +1,397 @@
+$light-bg-color: white;
+$light-text-color: black;
+$dark-bg-color: hsl(0, 0%, 14%);
+$dark-text-color: white;
+$primary: #3A7189;
+$second: #028001;
+$cinnamon: #986544;
+$ginger: #d2a45d;
+$russian: #ffb7b4;
+$lora-font: "Lora", serif;
+$geologica-font: "Geologica", sans-serif;
+$mulish-font: "Mulish", sans-serif;
+$transition-duration: 0.3s;
+$hover-scale: 1.03;
+
+@mixin lora($weight: 400) {
+  font-family: $lora-font;
+  font-optical-sizing: auto;
+  font-weight: $weight;
+  font-style: normal;
+}
+
+@mixin geologica($weight: 400, $cursive: 0, $sharpness: 50) {
+    font-family: $geologica-font;
+    font-optical-sizing: auto;
+    font-weight: $weight;
+    font-style: normal;
+    font-variation-settings:
+      "slnt" 0,
+      "CRSV" $cursive,
+      "SHRP" $sharpness;
+}
+@mixin mulish($weight: 400) {
+    font-family: $mulish-font;
+    font-optical-sizing: auto;
+    font-weight: $weight;
+    font-style: normal;
+}
+@mixin img-styles($transition-duration) {
+  cursor: pointer;
+  max-width: 100%;
+  -moz-transition: all $transition-duration;
+  -webkit-transition: all $transition-duration;
+  transition: all $transition-duration;
+}
+@mixin hover-transform($scale) {
+  -moz-transform: scale($scale);
+  -webkit-transform: scale($scale);
+  transform: scale($scale);
+}
+body {
+  padding: 0 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: no-wrap;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  @include geologica($weight: 400);
+}
+header, footer, nav, a {
+  display: flex;
+  text-decoration: none;
+}
+main {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  h1 {
+    font-size: 2.5em;
+    margin: 2em 0 0 0;
+  }
+}
+hey {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  margin: 2.5em 0 5em 0;
+  justify-content: flex-start;
+  width: 1000px;
+  max-width: 90%;
+  .img-hey {
+    width: 60%;
+    max-height: 650px;
+    position: relative;
+    img {
+      object-fit: cover;
+      width: 100%;
+      height: auto;
+    }
+    a {
+      cursor: pointer;
+      position: absolute;
+      width: 70px;
+      height: 60px;
+      top: 72%;
+      right: 36%;
+      margin: 0;
+      padding: 0;
+    }
+  }
+  .greeting {
+    margin: 2em 2em 1em 0;
+    max-width: 40%;
+    h1 {
+      font-size: 2em;
+      margin: 0;
+      padding: 0;
+    }
+    h3 {
+      margin: 4em 0 0 0;
+      @include geologica($weight: 700);
+      text-decoration: underline solid grey;
+    }
+  }
+  .adult {
+    margin: 2em 0;
+  }
+}
+footer {
+  flex-wrap: wrap;
+  height: 10rem;
+  width: 1000px;
+  max-width: 90%;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  background: #CAC1FF;
+  color: black;
+  font-size: 0.9em;
+  padding: 1.5rem 0 0 0;
+  margin: 5em 0 2em 0;
+  img {
+    width: 10em;
+    margin: 0 2em;
+  }
+  div, nav {
+    display: flex;
+    margin: 0 2rem 0 2rem;
+    flex-direction: column;
+  }
+  a {
+    margin: 0;
+    padding: 0.3rem 1rem 0.3rem 1rem;
+    color: black;
+  }
+  a:hover {
+    text-decoration: underline 1px solid black;
+  }
+  p {
+    width: 20rem;
+    margin: 0 1rem;
+    display: flex;
+  }
+  span { 
+    width: 100%;
+    justify-content: center;
+    display: flex;
+  }
+}
+block {
+  width: 1000px;
+  max-width: 90%;
+  height: auto;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  margin: 2em 0;
+  .block-info {
+    max-width: 80%;
+    padding: 0 5%;
+    .quote {
+      margin: 0;
+      padding: 1.5em 0;
+      border: 0.5px solid transparent;
+      border-top-color: rgb(206, 190, 190);
+      display: flex;
+      .copy-b {
+        border: 0;
+        background: none;
+        margin: 0 1em 0 0;
+        padding: 0;
+        cursor: pointer;
+        img {
+          width: 20px;
+
+        }
+      }
+    }
+    .quote:last-child {
+      border-bottom-color: rgb(206, 190, 190);
+    }
+    a {
+      width: 10em;
+      margin: 2em 0;
+      background-color: $second;
+      border-radius: 30px;
+      color: white;
+      align-items: center;
+      justify-content: center;
+      padding: 1em;
+    }
+  }
+  h2 {
+    width: auto;
+    font-size: 1.5em;
+  }
+  .idea {
+    width: auto;
+    margin: 0;
+    padding: 0 4em 0 0;
+    span {
+      font-size: 1.2em;
+      color: $second;
+    }
+    a {
+      text-decoration: underline 2px dotted blue;
+      margin: auto 0 0 0;
+    }
+  }
+}
+.error {
+  display: flex;
+  width: 40em;
+  margin: 1em 0 0 0;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: black;
+  img {
+    border-radius: 10px;
+  }
+}
+.error:hover {
+  text-decoration: underline 1px solid white;
+}
+
+// Scroll
+::-webkit-scrollbar { /* width */
+  width: 10px;
+}
+::-webkit-scrollbar-track { /* Track */
+  background: transparent;
+}
+::-webkit-scrollbar-thumb { /* Handle */
+  background: black;
+}
+::-webkit-scrollbar-thumb:hover { /* Handle on hover */
+  background: black;
+}
+
+@media screen and (max-width: 1250px) {
+  article, blog, cocktails, .content {
+    width: 90%;
+  }
+  .spoiler {
+    width: calc(100% - 1px);
+    margin: 2em 0 0 0;
+    .spoiler-content {
+      width: 85%;
+      img {
+        width: 60%;
+      }
+    }
+  }
+  .info-cockt {
+    width: 90%;
+  }
+  principe {
+    div {
+      width: 70%;
+    }
+  }
+  header, footer {
+    max-width: 90%;
+  }
+  footer {
+    div {
+      flex-direction: column;
+    }
+    nav {
+      flex-direction: row;
+      a {
+        padding: 0.3rem;
+      }
+    }
+  }
+  hey {
+    width: 1600px;
+    max-width: 90%;
+  }
+  block {
+    width: 1600px;
+    max-width: 90%;
+    .units-pro {
+      justify-content: space-between;
+    }
+  }
+}
+@media screen and (max-width: 860px) {
+  hey {
+    width: 90%;
+    margin-bottom: 0;
+    flex-direction: column;
+    .greeting {
+      max-width: 100%;
+      margin: 0 0 2em 0;
+      h3 {
+        margin: 3em 0 0 0;
+      }
+    }
+    h1 {
+      font-size: 1.8em;
+      max-width: 100%;
+      margin: 2em 0;
+    }
+
+    .img-hey {
+      // height: 50vh;
+      width: 100%;
+      margin: 0 0 2em 0;
+    }
+  }
+  .error {
+    width: 90%;
+    padding: 0;
+    img {
+      width: 100%;
+    }
+  }
+  .info-cockt {
+    width: 90%;
+    search {
+      position: relative;
+      width: 90%;
+      margin: 0;
+    }
+    .img-info {
+      display: none;
+    }
+  }
+  block {
+    flex-direction: column;   
+    .block-info {
+      max-width: 100%;
+      margin: 0 0 2em 0;
+    }
+    .idea-ingri, .units-pro, .mixology-img {
+      max-width: 100%;
+      margin: 0;
+      align-items: left;
+      justify-content: left;
+    }
+    .units-pro {
+      flex-direction: column;
+      align-items: center;
+      .u-pro {
+        width: 90%;
+        padding: 2em 0;
+        margin: 1em 0;
+        border-radius: 20px;
+        background-color: white;
+      }
+    }
+  }
+  footer {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    gap: 20px;
+    padding: 2em 0;
+    margin: 5em 0 2em 0;
+    img {
+      margin: 2em 2em;
+    }
+    p {
+      width: 80%;
+      text-align: center;
+    }
+    div, nav {
+      margin: 0 0;
+    }
+    nav {
+      flex-direction: column;
+    }
+    a {
+      justify-content: center;
+      text-align: center;
+    }
+  }
+}

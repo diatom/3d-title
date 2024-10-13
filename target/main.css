@@ -1,0 +1,357 @@
+body {
+  padding: 0 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: no-wrap;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: "Geologica", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings: "slnt" 0, "CRSV" 0, "SHRP" 50;
+}
+
+header, footer, nav, a {
+  display: flex;
+  text-decoration: none;
+}
+
+main {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+main h1 {
+  font-size: 2.5em;
+  margin: 2em 0 0 0;
+}
+
+hey {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  margin: 2.5em 0 5em 0;
+  justify-content: flex-start;
+  width: 1000px;
+  max-width: 90%;
+}
+hey .img-hey {
+  width: 60%;
+  max-height: 650px;
+  position: relative;
+}
+hey .img-hey img {
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+}
+hey .img-hey a {
+  cursor: pointer;
+  position: absolute;
+  width: 70px;
+  height: 60px;
+  top: 72%;
+  right: 36%;
+  margin: 0;
+  padding: 0;
+}
+hey .greeting {
+  margin: 2em 2em 1em 0;
+  max-width: 40%;
+}
+hey .greeting h1 {
+  font-size: 2em;
+  margin: 0;
+  padding: 0;
+}
+hey .greeting h3 {
+  margin: 4em 0 0 0;
+  font-family: "Geologica", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings: "slnt" 0, "CRSV" 0, "SHRP" 50;
+  text-decoration: underline solid grey;
+}
+hey .adult {
+  margin: 2em 0;
+}
+
+footer {
+  flex-wrap: wrap;
+  height: 10rem;
+  width: 1000px;
+  max-width: 90%;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  background: #CAC1FF;
+  color: black;
+  font-size: 0.9em;
+  padding: 1.5rem 0 0 0;
+  margin: 5em 0 2em 0;
+}
+footer img {
+  width: 10em;
+  margin: 0 2em;
+}
+footer div, footer nav {
+  display: flex;
+  margin: 0 2rem 0 2rem;
+  flex-direction: column;
+}
+footer a {
+  margin: 0;
+  padding: 0.3rem 1rem 0.3rem 1rem;
+  color: black;
+}
+footer a:hover {
+  text-decoration: underline 1px solid black;
+}
+footer p {
+  width: 20rem;
+  margin: 0 1rem;
+  display: flex;
+}
+footer span {
+  width: 100%;
+  justify-content: center;
+  display: flex;
+}
+
+block {
+  width: 1000px;
+  max-width: 90%;
+  height: auto;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  margin: 2em 0;
+}
+block .block-info {
+  max-width: 80%;
+  padding: 0 5%;
+}
+block .block-info .quote {
+  margin: 0;
+  padding: 1.5em 0;
+  border: 0.5px solid transparent;
+  border-top-color: rgb(206, 190, 190);
+  display: flex;
+}
+block .block-info .quote .copy-b {
+  border: 0;
+  background: none;
+  margin: 0 1em 0 0;
+  padding: 0;
+  cursor: pointer;
+}
+block .block-info .quote .copy-b img {
+  width: 20px;
+}
+block .block-info .quote:last-child {
+  border-bottom-color: rgb(206, 190, 190);
+}
+block .block-info a {
+  width: 10em;
+  margin: 2em 0;
+  background-color: #028001;
+  border-radius: 30px;
+  color: white;
+  align-items: center;
+  justify-content: center;
+  padding: 1em;
+}
+block h2 {
+  width: auto;
+  font-size: 1.5em;
+}
+block .idea {
+  width: auto;
+  margin: 0;
+  padding: 0 4em 0 0;
+}
+block .idea span {
+  font-size: 1.2em;
+  color: #028001;
+}
+block .idea a {
+  text-decoration: underline 2px dotted blue;
+  margin: auto 0 0 0;
+}
+
+.error {
+  display: flex;
+  width: 40em;
+  margin: 1em 0 0 0;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: black;
+}
+.error img {
+  border-radius: 10px;
+}
+
+.error:hover {
+  text-decoration: underline 1px solid white;
+}
+
+::-webkit-scrollbar { /* width */
+  width: 10px;
+}
+
+::-webkit-scrollbar-track { /* Track */
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb { /* Handle */
+  background: black;
+}
+
+::-webkit-scrollbar-thumb:hover { /* Handle on hover */
+  background: black;
+}
+
+@media screen and (max-width: 1250px) {
+  article, blog, cocktails, .content {
+    width: 90%;
+  }
+  .spoiler {
+    width: calc(100% - 1px);
+    margin: 2em 0 0 0;
+  }
+  .spoiler .spoiler-content {
+    width: 85%;
+  }
+  .spoiler .spoiler-content img {
+    width: 60%;
+  }
+  .info-cockt {
+    width: 90%;
+  }
+  principe div {
+    width: 70%;
+  }
+  header, footer {
+    max-width: 90%;
+  }
+  footer div {
+    flex-direction: column;
+  }
+  footer nav {
+    flex-direction: row;
+  }
+  footer nav a {
+    padding: 0.3rem;
+  }
+  hey {
+    width: 1600px;
+    max-width: 90%;
+  }
+  block {
+    width: 1600px;
+    max-width: 90%;
+  }
+  block .units-pro {
+    justify-content: space-between;
+  }
+}
+@media screen and (max-width: 860px) {
+  hey {
+    width: 90%;
+    margin-bottom: 0;
+    flex-direction: column;
+  }
+  hey .greeting {
+    max-width: 100%;
+    margin: 0 0 2em 0;
+  }
+  hey .greeting h3 {
+    margin: 3em 0 0 0;
+  }
+  hey h1 {
+    font-size: 1.8em;
+    max-width: 100%;
+    margin: 2em 0;
+  }
+  hey .img-hey {
+    width: 100%;
+    margin: 0 0 2em 0;
+  }
+  .error {
+    width: 90%;
+    padding: 0;
+  }
+  .error img {
+    width: 100%;
+  }
+  .info-cockt {
+    width: 90%;
+  }
+  .info-cockt search {
+    position: relative;
+    width: 90%;
+    margin: 0;
+  }
+  .info-cockt .img-info {
+    display: none;
+  }
+  block {
+    flex-direction: column;
+  }
+  block .block-info {
+    max-width: 100%;
+    margin: 0 0 2em 0;
+  }
+  block .idea-ingri, block .units-pro, block .mixology-img {
+    max-width: 100%;
+    margin: 0;
+    align-items: left;
+    justify-content: left;
+  }
+  block .units-pro {
+    flex-direction: column;
+    align-items: center;
+  }
+  block .units-pro .u-pro {
+    width: 90%;
+    padding: 2em 0;
+    margin: 1em 0;
+    border-radius: 20px;
+    background-color: white;
+  }
+  footer {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    gap: 20px;
+    padding: 2em 0;
+    margin: 5em 0 2em 0;
+  }
+  footer img {
+    margin: 2em 2em;
+  }
+  footer p {
+    width: 80%;
+    text-align: center;
+  }
+  footer div, footer nav {
+    margin: 0 0;
+  }
+  footer nav {
+    flex-direction: column;
+  }
+  footer a {
+    justify-content: center;
+    text-align: center;
+  }
+}
