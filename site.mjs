@@ -94,20 +94,20 @@ class PageIndex extends Page {
     return Layout(tit, desc, img,
       // Nav(this),
       E.main.chi(
-        E.hey.chi(
-          E.div.props({class: `greeting`}).chi(
-            E.h1.chi(`Severin Bogucharsky`),
-          ),
-          E.div.props({class: `img-hey`}).chi(
-          ),
-        ),
-        E.block.chi(
-          E.div.props({class: `block-info`}).chi(
-            E.h2.chi(`1`),
-          ),
-        ),
+        // E.hey.chi(
+        //   E.div.props({class: `greeting`}).chi(
+        //     E.h1.chi(`Severin Bogucharsky`),
+        //   ),
+        //   E.div.props({class: `img-hey`}).chi(
+        //   ),
+        // ),
+        // E.block.chi(
+        //   E.div.props({class: `block-info`}).chi(
+        //     E.h2.chi(`1`),
+        //   ),
+        // ),
       ),
-      Footer(this)
+      // Footer(this)
     )
   }
 }
@@ -141,7 +141,7 @@ function Layout(tit, desc, img, ...chi) {
         E.meta.props({property: `og:image:height`, content: `600`}),
         E.meta.props({property: `og:image:width`, content: `300`}),
         E.meta.props({property: `og:image:type`, content: `image/jpeg`}),
-        E.link.props({rel: `icon`, type: `image/x-icon`, href: `/images/icon.ico`}),
+        // E.link.props({rel: `icon`, type: `image/x-icon`, href: `/images/icon.ico`}),
         E.link.props({rel: `stylesheet`, href: `/main.css`}),
         E.style.chi(`@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap')`),
         E.style.chi(`@import url('https://fonts.googleapis.com/css2?family=Geologica:wght,CRSV,SHRP@100..900,0..1,0..100&family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');`),
