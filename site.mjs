@@ -94,6 +94,7 @@ class PageIndex extends Page {
     return Layout(tit, desc, img,
       // Nav(this),
       E.main.chi(
+        E.div.props({class: `logo`}).chi(`Severin Bogucharsky`),
         // E.hey.chi(
         //   E.div.props({class: `greeting`}).chi(
         //     E.h1.chi(`Severin Bogucharsky`),
@@ -108,6 +109,7 @@ class PageIndex extends Page {
         // ),
       ),
       // Footer(this)
+      E.div.props({id: `container`}),
     )
   }
 }
@@ -143,8 +145,10 @@ function Layout(tit, desc, img, ...chi) {
         E.meta.props({property: `og:image:type`, content: `image/jpeg`}),
         // E.link.props({rel: `icon`, type: `image/x-icon`, href: `/images/icon.ico`}),
         E.link.props({rel: `stylesheet`, href: `/main.css`}),
-        E.style.chi(`@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap')`),
-        E.style.chi(`@import url('https://fonts.googleapis.com/css2?family=Geologica:wght,CRSV,SHRP@100..900,0..1,0..100&family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');`),
+        // E.style.chi(`@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap')`),
+        // E.style.chi(`@import url('https://fonts.googleapis.com/css2?family=Geologica:wght,CRSV,SHRP@100..900,0..1,0..100&family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');`),
+        E.style.chi(`@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');`),
+        E.style.chi(`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&display=swap');`),
         a.vac(DEV) && E.script.chi(`navigator.serviceWorker.register('/sw.mjs')`),
         // Md(`./data/anal.md`)
       ),

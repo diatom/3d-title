@@ -10,6 +10,8 @@ $russian: #ffb7b4;
 $lora-font: "Lora", serif;
 $geologica-font: "Geologica", sans-serif;
 $mulish-font: "Mulish", sans-serif;
+$noto-font: "Noto Sans Mono", monospace;
+$silkscreen-font: "Silkscreen", serif;
 $transition-duration: 0.3s;
 $hover-scale: 1.03;
 
@@ -36,17 +38,18 @@ $hover-scale: 1.03;
     font-weight: $weight;
     font-style: normal;
 }
-@mixin img-styles($transition-duration) {
-  cursor: pointer;
-  max-width: 100%;
-  -moz-transition: all $transition-duration;
-  -webkit-transition: all $transition-duration;
-  transition: all $transition-duration;
+@mixin noto($weight: 400) {
+    font-family: $noto-font;
+    font-optical-sizing: auto;
+    font-weight: $weight;
+    font-style: normal;
+    font-variation-settings:
+    "wdth" 100;
 }
-@mixin hover-transform($scale) {
-  -moz-transform: scale($scale);
-  -webkit-transform: scale($scale);
-  transform: scale($scale);
+@mixin silkscreen($weight: 400) {
+    font-family: "Silkscreen", serif;
+    font-weight: $weight;
+    font-style: normal;
 }
 body {
   padding: 0;
@@ -74,6 +77,18 @@ main {
     margin: 2em 0 0 0;
   }
 }
+.logo {
+  position: absolute;
+	top: 5%;
+	// width: 100%;
+  left: 5%;
+	text-align: left;
+	z-index: 100;
+	display: block;
+  color: white;
+  font-size: 40px;
+  @include silkscreen($weight: 400);
+}
 hey {
   display: flex;
   flex-direction: row;
@@ -82,43 +97,6 @@ hey {
   justify-content: flex-start;
   width: 1000px;
   max-width: 90%;
-  .img-hey {
-    width: 60%;
-    max-height: 650px;
-    position: relative;
-    img {
-      object-fit: cover;
-      width: 100%;
-      height: auto;
-    }
-    a {
-      cursor: pointer;
-      position: absolute;
-      width: 70px;
-      height: 60px;
-      top: 72%;
-      right: 36%;
-      margin: 0;
-      padding: 0;
-    }
-  }
-  .greeting {
-    margin: 2em 2em 1em 0;
-    max-width: 40%;
-    h1 {
-      font-size: 2em;
-      margin: 0;
-      padding: 0;
-    }
-    h3 {
-      margin: 4em 0 0 0;
-      @include geologica($weight: 700);
-      text-decoration: underline solid grey;
-    }
-  }
-  .adult {
-    margin: 2em 0;
-  }
 }
 footer {
   flex-wrap: wrap;
@@ -170,41 +148,6 @@ block {
   justify-content: center;
   flex-direction: row;
   margin: 2em 0;
-  .block-info {
-    max-width: 80%;
-    padding: 0 5%;
-    .quote {
-      margin: 0;
-      padding: 1.5em 0;
-      border: 0.5px solid transparent;
-      border-top-color: rgb(206, 190, 190);
-      display: flex;
-      .copy-b {
-        border: 0;
-        background: none;
-        margin: 0 1em 0 0;
-        padding: 0;
-        cursor: pointer;
-        img {
-          width: 20px;
-
-        }
-      }
-    }
-    .quote:last-child {
-      border-bottom-color: rgb(206, 190, 190);
-    }
-    a {
-      width: 10em;
-      margin: 2em 0;
-      background-color: $second;
-      border-radius: 30px;
-      color: white;
-      align-items: center;
-      justify-content: center;
-      padding: 1em;
-    }
-  }
   h2 {
     width: auto;
     font-size: 1.5em;
@@ -239,35 +182,8 @@ block {
   text-decoration: underline 1px solid white;
 }
 
-// Scroll
-::-webkit-scrollbar { /* width */
-  width: 10px;
-}
-::-webkit-scrollbar-track { /* Track */
-  background: transparent;
-}
-::-webkit-scrollbar-thumb { /* Handle */
-  background: black;
-}
-::-webkit-scrollbar-thumb:hover { /* Handle on hover */
-  background: black;
-}
-
 @media screen and (max-width: 1250px) {
   article, blog, cocktails, .content {
-    width: 90%;
-  }
-  .spoiler {
-    width: calc(100% - 1px);
-    margin: 2em 0 0 0;
-    .spoiler-content {
-      width: 85%;
-      img {
-        width: 60%;
-      }
-    }
-  }
-  .info-cockt {
     width: 90%;
   }
   principe {
@@ -332,39 +248,11 @@ block {
       width: 100%;
     }
   }
-  .info-cockt {
-    width: 90%;
-    search {
-      position: relative;
-      width: 90%;
-      margin: 0;
-    }
-    .img-info {
-      display: none;
-    }
-  }
   block {
     flex-direction: column;   
     .block-info {
       max-width: 100%;
       margin: 0 0 2em 0;
-    }
-    .idea-ingri, .units-pro, .mixology-img {
-      max-width: 100%;
-      margin: 0;
-      align-items: left;
-      justify-content: left;
-    }
-    .units-pro {
-      flex-direction: column;
-      align-items: center;
-      .u-pro {
-        width: 90%;
-        padding: 2em 0;
-        margin: 1em 0;
-        border-radius: 20px;
-        background-color: white;
-      }
     }
   }
   footer {
