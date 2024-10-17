@@ -39,7 +39,8 @@ main h1 {
   z-index: 100;
   display: block;
   color: white;
-  font-size: 40px;
+  text-shadow: 2px 2px orange;
+  font-size: 50px;
   font-family: "Silkscreen", serif;
   font-weight: 400;
   font-style: normal;
