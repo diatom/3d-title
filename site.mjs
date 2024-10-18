@@ -155,10 +155,12 @@ function Layout(tit, desc, img, ...chi) {
       E.body.chi(chi),
       E.script.props({type: `importmap`}).chi(`  {
         "imports": {
-          "three": "https://cdn.jsdelivr.net/npm/three@v0.169.0/build/three.module.js",
-          "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.169.0/examples/jsm/"
+          "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
         }
       }`),
+      // E.script.props({src: `https://unpkg.com/three@0.146.0/examples/js/controls/OrbitControls.js`}),
+      // E.script.props({src: `https://unpkg.com/three@0.146.0/examples/js/geometries/DecalGeometry.js`}),
       E.script.props({type: `module`, src: `/browser.mjs`, defer: ``}),
       // E.script.props({type: `module`, src: `/site.mjs`}),
       a.vac(DEV) && E.script.props({type: `module`, src: l.LIVE_CLIENT}),

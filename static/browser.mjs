@@ -4,7 +4,9 @@ const {E} = p.Ren.native()
 import * as THREE from 'three';
 import WebGL from 'three/addons/capabilities/WebGL.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js'; // Import OrbitControls
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+// import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry.js';
+
 
 // Scene
 const scene = new THREE.Scene();
@@ -76,49 +78,6 @@ backWall.position.set(10, 5, -6); // Позиция задней стены
 backWall.rotation.y = 0; // Поворот стены (по умолчанию)
 scene.add(backWall);
 
-// Создание холста и контекста
-// const canvas = document.createElement('canvas');
-// const context = canvas.getContext('2d');
-
-// Установка размеров холста
-// canvas.width = 512; // Задайте нужный размер
-// canvas.height = 512;
-
-// Создание SVG-строки
-// const svgString = `
-// <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">
-//     <rect width="100%" height="100%" fill="white"/>
-//     <circle cx="256" cy="256" r="200" fill="blue"/>
-//     <text x="256" y="256" font-size="40" text-anchor="middle" fill="white">Hello</text>
-// </svg>
-// `;
-
-// Создание изображения из SVG
-// const svgImage = new Image();
-// const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-// const url = URL.createObjectURL(svgBlob);
-
-// svgImage.onload = () => {
-//     // Рисуем SVG на холсте
-//     context.drawImage(svgImage, 0, 0);
-    
-//     // Создаем текстуру из холста
-//     const texture = new THREE.Texture(canvas);
-//     texture.needsUpdate = true; // Обновляем текстуру
-
-//     // Создаем материал с этой текстурой
-//     const wallMaterialBack = new THREE.MeshBasicMaterial({ map: texture, color: 0x8c0b0b });
-
-//     // Задняя стена
-//     const backWall = new THREE.Mesh(wallGeometryBack, wallMaterialBack);
-//     backWall.position.set(10, 5, -6); // Позиция задней стены
-//     backWall.rotation.y = 0; // Поворот стены (по умолчанию)
-//     scene.add(backWall);
-// };
-
-// // Устанавливаем источник изображения для загрузки SVG
-// svgImage.src = url;
-
 // Box
 const boxGeometry = new THREE.BoxGeometry(4, 2, 2)
 const boxMaterial = new THREE.MeshStandardMaterial({color: 0x00ffff})
@@ -154,10 +113,86 @@ function createBook(position) {
     scene.add(coverBack);
     scene.add(pages);
 }
-
-// Задаем позицию книги и создаем её
 const bookPosition = new THREE.Vector3(4, 2.03, -1); // Задайте нужные координаты
 createBook(bookPosition);
+
+// Bottle
+const scale = 0.05;
+const neckRadius = 1.5 * scale;
+const neckHeight = 5 * scale;
+const bodyRadius = 3 * scale;
+const bodyHeight = 15 * scale;
+const totalHeight = neckHeight + bodyHeight;
+
+// Create bottle profile
+const bottleProfile = [];
+bottleProfile.push(new THREE.Vector2(neckRadius, totalHeight));
+bottleProfile.push(new THREE.Vector2(neckRadius, totalHeight - neckHeight));
+bottleProfile.push(new THREE.Vector2(bodyRadius, totalHeight - neckHeight));
+bottleProfile.push(new THREE.Vector2(bodyRadius, 0));
+
+// Create LatheGeometry
+const segments = 64;
+const bottleGeometry = new THREE.LatheGeometry(bottleProfile, segments);
+
+// Create glass material
+const bottleMaterial = new THREE.MeshPhysicalMaterial({
+  color: 0xffffff,
+  metalness: 0,
+  roughness: 0,
+//   transmission: 1,
+  thickness: 0.5,
+  side: THREE.DoubleSide,
+  transparent: true,
+  opacity: 1.0,
+});
+// Create bottle mesh
+const bottleMesh = new THREE.Mesh(bottleGeometry, bottleMaterial);
+// Load SVG logo and apply as decal
+const fileLoader = new THREE.FileLoader();
+function loadLogoAndApplyToBottle(svgUrl) {
+  fileLoader.load(svgUrl, function (svgData) {
+    const svgBlob = new Blob([svgData], {type: 'images/ibri-logo-white.png'});
+    const url = URL.createObjectURL(svgBlob);
+
+    const img = new Image();
+
+    img.onload = function () {
+      const texture = new THREE.Texture(img);
+      texture.needsUpdate = true;
+
+      const decalMaterial = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        depthTest: true,
+        depthWrite: false,
+        polygonOffset: true,
+        polygonOffsetFactor: -4,
+      });
+      const decalPosition = new THREE.Vector3(0, bodyHeight / 2, bodyRadius - 0.1);
+      const decalOrientation = new THREE.Euler(0, 0, 0);
+      const decalSize = new THREE.Vector3(4 * scale, 4 * scale, 0.1 * scale);
+      const decalGeometry = new THREE.DecalGeometry(
+        bottleMesh,
+        decalPosition,
+        decalOrientation,
+        decalSize
+      );
+      const decalMesh = new THREE.Mesh(decalGeometry, decalMaterial);
+      bottleMesh.add(decalMesh);
+      URL.revokeObjectURL(url);
+    };
+    img.onerror = function () {
+      console.error('Error loading SVG image.');
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  });
+}
+bottleMesh.position.set(6, 2, -1)
+scene.add(bottleMesh)
+
+
 
 // Light
 const light = new THREE.DirectionalLight(0xffffff, 3);
