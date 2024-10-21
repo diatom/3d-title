@@ -63,7 +63,8 @@ scene.add(chessBoard);
 // Wall
 const wallGeometryLeft = new THREE.PlaneGeometry(20, 10);
 const wallGeometryBack = new THREE.PlaneGeometry(20, 10);
-const wallMaterialLeft = new THREE.MeshBasicMaterial({ color: 0xd63636 });
+const wallMaterialLeft = new THREE.MeshBasicMaterial({ color: 0xa1abad });
+// const wallMaterialLeft = new THREE.MeshBasicMaterial({ color: 0xd63636 });
 const wallMaterialBack = new THREE.MeshBasicMaterial({ color: 0x8c0b0b });
 
 // Left Wall
