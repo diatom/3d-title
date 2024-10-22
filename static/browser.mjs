@@ -79,6 +79,7 @@ backWall.position.set(10, 5, -6); // Позиция задней стены
 backWall.rotation.y = 0; // Поворот стены (по умолчанию)
 scene.add(backWall);
 
+
 // Box
 const boxGeometry = new THREE.BoxGeometry(4, 2, 2)
 const boxMaterial = new THREE.MeshStandardMaterial({color: 0x00ffff})
@@ -117,81 +118,81 @@ function createBook(position) {
 const bookPosition = new THREE.Vector3(4, 2.03, -1); // Задайте нужные координаты
 createBook(bookPosition);
 
-// Bottle
+// Aluminum Can
 const scale = 0.05;
-const neckRadius = 1.5 * scale;
-const neckHeight = 5 * scale;
-const bodyRadius = 3 * scale;
-const bodyHeight = 15 * scale;
-const totalHeight = neckHeight + bodyHeight;
+const topRadius = 3 * scale;
+const bottomRadius = 3 * scale;
+const bodyHeight = 9 * scale;
+const bevelRadius = 0.5 * scale;
+const totalHeight = bodyHeight + 2 * bevelRadius;
 
-// Create bottle profile
-const bottleProfile = [];
-bottleProfile.push(new THREE.Vector2(neckRadius, totalHeight));
-bottleProfile.push(new THREE.Vector2(neckRadius, totalHeight - neckHeight));
-bottleProfile.push(new THREE.Vector2(bodyRadius, totalHeight - neckHeight));
-bottleProfile.push(new THREE.Vector2(bodyRadius, 0));
+// Create can profile with bevels on both ends
+const canProfile = [];
+// Top bevel
+canProfile.push(new THREE.Vector2(topRadius - bevelRadius, totalHeight));
+canProfile.push(new THREE.Vector2(topRadius, totalHeight - bevelRadius));
+// Body
+canProfile.push(new THREE.Vector2(topRadius, bevelRadius));
+canProfile.push(new THREE.Vector2(bottomRadius, bevelRadius));
+// Bottom bevel
+canProfile.push(new THREE.Vector2(bottomRadius - bevelRadius, 0));
 
 // Create LatheGeometry
 const segments = 64;
-const bottleGeometry = new THREE.LatheGeometry(bottleProfile, segments);
+const canGeometry = new THREE.LatheGeometry(canProfile, segments);
 
-// Create glass material
-const bottleMaterial = new THREE.MeshPhysicalMaterial({
-  color: 0xffffff,
-  metalness: 0,
-  roughness: 0,
-//   transmission: 1,
-  thickness: 0.5,
+// Create aluminum material
+const canMaterial = new THREE.MeshPhysicalMaterial({
+  color: 0xc0c0c0, // Aluminum color
+  metalness: 0.3,
+  roughness: 0.3,
+  clearcoat: 1,
+  clearcoatRoughness: 0.1,
   side: THREE.DoubleSide,
-  transparent: true,
-  opacity: 1.0,
+  transparent: false,
 });
-// Create bottle mesh
-const bottleMesh = new THREE.Mesh(bottleGeometry, bottleMaterial);
-// Load SVG logo and apply as decal
-const fileLoader = new THREE.FileLoader();
-function loadLogoAndApplyToBottle(svgUrl) {
-  fileLoader.load(svgUrl, function (svgData) {
-    const svgBlob = new Blob([svgData], {type: 'images/ibri-logo-white.png'});
-    const url = URL.createObjectURL(svgBlob);
 
-    const img = new Image();
+// Create can mesh
+const canMesh = new THREE.Mesh(canGeometry, canMaterial);
 
-    img.onload = function () {
-      const texture = new THREE.Texture(img);
-      texture.needsUpdate = true;
+// Create a separate material for the top cap with customizable color
+const topCapColor = 0xc0c0c0; // Example color (red), change as needed
+const topCapMaterial = new THREE.MeshPhysicalMaterial({
+  color: topCapColor,
+  metalness: 0.3,
+  roughness: 0.3,
+  clearcoat: 1,
+  clearcoatRoughness: 0.1,
+  side: THREE.DoubleSide,
+  transparent: false,
+});
 
-      const decalMaterial = new THREE.MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        depthTest: true,
-        depthWrite: false,
-        polygonOffset: true,
-        polygonOffsetFactor: -4,
-      });
-      const decalPosition = new THREE.Vector3(0, bodyHeight / 2, bodyRadius - 0.1);
-      const decalOrientation = new THREE.Euler(0, 0, 0);
-      const decalSize = new THREE.Vector3(4 * scale, 4 * scale, 0.1 * scale);
-      const decalGeometry = new THREE.DecalGeometry(
-        bottleMesh,
-        decalPosition,
-        decalOrientation,
-        decalSize
-      );
-      const decalMesh = new THREE.Mesh(decalGeometry, decalMaterial);
-      bottleMesh.add(decalMesh);
-      URL.revokeObjectURL(url);
-    };
-    img.onerror = function () {
-      console.error('Error loading SVG image.');
-      URL.revokeObjectURL(url);
-    };
-    img.src = url;
-  });
-}
-bottleMesh.position.set(6, 2, -1)
-scene.add(bottleMesh)
+// Create top cap (disc) geometry
+const topCapGeometry = new THREE.CircleGeometry(topRadius - bevelRadius, segments);
+const topCapMesh = new THREE.Mesh(topCapGeometry, topCapMaterial);
+
+// Position the top cap
+topCapMesh.rotation.x = -Math.PI / 2; // Align the disc horizontally
+topCapMesh.position.y = totalHeight - bevelRadius; // Place it at the correct height
+
+// Add top cap to the can
+canMesh.add(topCapMesh);
+
+// Create bottom cap (disc) geometry
+const bottomCapGeometry = new THREE.CircleGeometry(bottomRadius - bevelRadius, segments);
+const bottomCapMesh = new THREE.Mesh(bottomCapGeometry, canMaterial);
+
+// Position the bottom cap
+bottomCapMesh.rotation.x = Math.PI / 2; // Align the disc horizontally
+bottomCapMesh.position.y = bevelRadius; // Place it at the correct height
+
+// Add bottom cap to the can
+canMesh.add(bottomCapMesh);
+
+// Position and add can to scene
+canMesh.position.set(6, 2, -1);
+scene.add(canMesh);
+
 
 
 
@@ -200,7 +201,6 @@ const light = new THREE.DirectionalLight(0xffffff, 3);
 light.castShadow = true
 light.position.set(40, 60, 10);
 scene.add(light);
-
 
 // Animation Loop
 function animate() {
@@ -215,3 +215,4 @@ if (WebGL.isWebGL2Available()) {
     const warning = WebGL.getWebGL2ErrorMessage();
     document.getElementById('container').appendChild(warning);
 }
+
