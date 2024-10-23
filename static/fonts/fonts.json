@@ -1,0 +1,23 @@
+{
+    "fonts": {
+      "CustomFont": {
+        "src": "fonts/Silkscreen-Bold.ttf",
+        "fontWeight": "700",
+        "fontStyle": "normal"
+      },
+      "AnotherFont": {
+        "src": "fonts/Silkscreen-Regular.ttf",
+        "fontWeight": "400",
+        "fontStyle": "normal"
+      }
+    },
+    "objects": [
+      {
+        "type": "text",
+        "content": "Привет, мир!",
+        "fontFamily": "CustomFont",
+        "fontSize": 24,
+        "color": "#000000"
+      }
+    ]
+  }

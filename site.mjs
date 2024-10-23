@@ -150,7 +150,7 @@ function Layout(tit, desc, img, ...chi) {
         E.style.chi(`@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');`),
         E.style.chi(`@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&display=swap');`),
         a.vac(DEV) && E.script.chi(`navigator.serviceWorker.register('/sw.mjs')`),
-        // Md(`./data/anal.md`)
+        // Md(`./data/anal.md`),
       ),
       E.body.chi(chi),
       E.script.props({type: `importmap`}).chi(`  {
@@ -161,6 +161,9 @@ function Layout(tit, desc, img, ...chi) {
       }`),
       // E.script.props({src: `https://unpkg.com/three@0.146.0/examples/js/controls/OrbitControls.js`}),
       // E.script.props({src: `https://unpkg.com/three@0.146.0/examples/js/geometries/DecalGeometry.js`}),
+      // E.script.props({src: `https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js`}),
+      // E.script.props({src: `https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/FontLoader.js`}),
+      // E.script.props({src: `https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/geometries/TextGeometry.js`}),
       E.script.props({type: `module`, src: `/browser.mjs`, defer: ``}),
       // E.script.props({type: `module`, src: `/site.mjs`}),
       a.vac(DEV) && E.script.props({type: `module`, src: l.LIVE_CLIENT}),

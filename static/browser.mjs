@@ -6,6 +6,7 @@ import WebGL from 'three/addons/capabilities/WebGL.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 // import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry.js';
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 
 
 // Scene
@@ -60,6 +61,7 @@ chessBoard.position.set(10, 0, 4); // Установка позиции шахм
 chessBoard.receiveShadow = true
 scene.add(chessBoard);
 
+
 // Wall
 const wallGeometryLeft = new THREE.PlaneGeometry(20, 10);
 const wallGeometryBack = new THREE.PlaneGeometry(20, 10);
@@ -79,6 +81,29 @@ backWall.position.set(10, 5, -6); // Позиция задней стены
 backWall.rotation.y = 0; // Поворот стены (по умолчанию)
 scene.add(backWall);
 
+
+// Logo font
+const loader = new FontLoader();
+const font = loader.load(
+	// resource URL
+	'fonts/Silkscreen_Bold.json',
+
+	// onLoad callback
+	function ( font ) {
+		// do something with the font
+		console.log( font );
+	},
+
+	// onProgress callback
+	function ( xhr ) {
+		console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+	},
+
+	// onError callback
+	function ( err ) {
+		console.log( 'An error happened' );
+	}
+);
 
 // Box
 const boxGeometry = new THREE.BoxGeometry(4, 2, 2)
