@@ -7,6 +7,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 // import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry.js';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+
 
 
 // Scene
@@ -15,8 +17,9 @@ const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerH
 camera.position.set(12, 10, 8);
 
 // Render
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
 renderer.shadowMap.enabled = true
 // renderer.setClearColor(0xb02828);
 document.getElementById('container').appendChild(renderer.domElement);
@@ -82,28 +85,56 @@ backWall.rotation.y = 0; // Поворот стены (по умолчанию)
 scene.add(backWall);
 
 
-// Logo font
+// Logo text
 const loader = new FontLoader();
-const font = loader.load(
-	// resource URL
-	'fonts/Silkscreen_Bold.json',
+loader.load('fonts/caveat_regular.json', function (font) {
+    const textGeo = new TextGeometry('Severin\nBogucharsky', {
+        font: font,
+        size: 0.7,
+        depth: 0.1,
+        curveSegments: 1,
+        bevelThickness: 0.01,
+        bevelSize: 0.01,
+        bevelEnabled: true
+    } );
 
-	// onLoad callback
-	function ( font ) {
-		// do something with the font
-		console.log( font );
-	},
+    textGeo.computeBoundingBox();
+    const textMaterial = new THREE.MeshPhongMaterial( { color: 0xff0000, specular: 0xffffff } );
+    const mesh = new THREE.Mesh( textGeo, textMaterial );
+    mesh.position.set(-0.02, 5, 7)
+    mesh.rotation.y = Math.PI / 2;
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
 
-	// onProgress callback
-	function ( xhr ) {
-		console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
-	},
+    const shadowMaterial = new THREE.ShadowMaterial({ opacity: 0.5 });
+    const shadowMesh = new THREE.Mesh(textGeo, shadowMaterial);
+    shadowMesh.position.set(-0.02, 5, 9);
+    shadowMesh.rotation.y = Math.PI / 2;
+    scene.add(shadowMesh);
+    scene.add( mesh );
+});
 
-	// onError callback
-	function ( err ) {
-		console.log( 'An error happened' );
-	}
-);
+// Jpg Bruegel
+const textureLoaderBru = new THREE.TextureLoader();
+textureLoaderBru.load('images/pic-bruegel.jpg', function(texture) {
+    const material = new THREE.MeshBasicMaterial({ map: texture });
+    const geometry = new THREE.PlaneGeometry(5, 3.5);
+    const plane = new THREE.Mesh(geometry, material);
+    plane.position.set(5, 4, -5.9)
+    scene.add(plane);
+});
+
+
+// Jpg portrait
+// const textureLoaderPor = new THREE.TextureLoader();
+// textureLoaderPor.load('images/photo-2023.svg', function(texture) {
+//     const material = new THREE.MeshBasicMaterial({ map: texture });
+//     const geometry = new THREE.PlaneGeometry(1.5, 1.5);
+//     const plane = new THREE.Mesh(geometry, material);
+//     plane.position.set(0.01, 4, -1)
+//     plane.rotation.y = Math.PI / 2;
+//     scene.add(plane);
+// });
 
 // Box
 const boxGeometry = new THREE.BoxGeometry(4, 2, 2)

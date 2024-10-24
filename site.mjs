@@ -94,7 +94,7 @@ class PageIndex extends Page {
     return Layout(tit, desc, img,
       // Nav(this),
       E.main.chi(
-        E.div.props({class: `logo`}).chi(`Severin Bogucharsky`),
+        // E.div.props({class: `logo`}).chi(`Severin Bogucharsky`),
         // E.hey.chi(
         //   E.div.props({class: `greeting`}).chi(
         //     E.h1.chi(`Severin Bogucharsky`),
