@@ -96,8 +96,7 @@ loader.load('fonts/caveat_regular.json', function (font) {
         bevelThickness: 0.01,
         bevelSize: 0.01,
         bevelEnabled: true
-    } );
-
+    });
     textGeo.computeBoundingBox();
     const textMaterial = new THREE.MeshPhongMaterial( { color: 0xff0000, specular: 0xffffff } );
     const mesh = new THREE.Mesh( textGeo, textMaterial );
@@ -123,18 +122,6 @@ textureLoaderBru.load('images/pic-bruegel.jpg', function(texture) {
     plane.position.set(5, 4, -5.9)
     scene.add(plane);
 });
-
-
-// Jpg portrait
-// const textureLoaderPor = new THREE.TextureLoader();
-// textureLoaderPor.load('images/photo-2023.svg', function(texture) {
-//     const material = new THREE.MeshBasicMaterial({ map: texture });
-//     const geometry = new THREE.PlaneGeometry(1.5, 1.5);
-//     const plane = new THREE.Mesh(geometry, material);
-//     plane.position.set(0.01, 4, -1)
-//     plane.rotation.y = Math.PI / 2;
-//     scene.add(plane);
-// });
 
 // Box
 const boxGeometry = new THREE.BoxGeometry(4, 2, 2)
