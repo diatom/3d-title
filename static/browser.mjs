@@ -9,6 +9,10 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
+// import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+// import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+// import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+
 
 
 // Scene
@@ -90,9 +94,9 @@ const loader = new FontLoader();
 loader.load('fonts/caveat_regular.json', function (font) {
     const textGeo = new TextGeometry('Severin\nBogucharsky', {
         font: font,
-        size: 0.7,
+        size: 1,
         depth: 0.1,
-        curveSegments: 1,
+        curveSegments: 10,
         bevelThickness: 0.01,
         bevelSize: 0.01,
         bevelEnabled: true
@@ -110,8 +114,9 @@ loader.load('fonts/caveat_regular.json', function (font) {
     shadowMesh.position.set(-0.02, 5, 9);
     shadowMesh.rotation.y = Math.PI / 2;
     scene.add(shadowMesh);
-    scene.add( mesh );
+    scene.add(mesh);
 });
+
 
 // Jpg Bruegel
 const textureLoaderBru = new THREE.TextureLoader();
@@ -133,8 +138,8 @@ scene.add(box)
 
 // Book
 function createBook(position) {
-    const bookWidth = 1; // Ширина книги
-    const bookHeight = 1.3; // Высота книги
+    const bookWidth = 0.75; // Ширина книги
+    const bookHeight = 1; // Высота книги
     const bookThickness = 0.2; // Толщина книги
     // Создание обложки книги
     const coverMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // Коричневый цвет для обложки
@@ -161,14 +166,25 @@ function createBook(position) {
 const bookPosition = new THREE.Vector3(4, 2.03, -1); // Задайте нужные координаты
 createBook(bookPosition);
 
-// Aluminum Can
+// Jpg cover
+const textureLoaderCover = new THREE.TextureLoader();
+textureLoaderCover.load('images/cover.jpg', function(texture) {
+    const material = new THREE.MeshBasicMaterial({ map: texture });
+    const geometry = new THREE.PlaneGeometry(0.75, 1);
+    const plane = new THREE.Mesh(geometry, material);
+    plane.position.set(4, 2.75, -1)
+    // plane.rotation.x = Math.PI / 2;
+    // plane.rotation.y = Math.PI / 2;
+    scene.add(plane);
+});
+
+// Aluminum can
 const scale = 0.05;
 const topRadius = 3 * scale;
 const bottomRadius = 3 * scale;
 const bodyHeight = 9 * scale;
 const bevelRadius = 0.5 * scale;
 const totalHeight = bodyHeight + 2 * bevelRadius;
-
 // Create can profile with bevels on both ends
 const canProfile = [];
 // Top bevel
@@ -179,11 +195,9 @@ canProfile.push(new THREE.Vector2(topRadius, bevelRadius));
 canProfile.push(new THREE.Vector2(bottomRadius, bevelRadius));
 // Bottom bevel
 canProfile.push(new THREE.Vector2(bottomRadius - bevelRadius, 0));
-
 // Create LatheGeometry
 const segments = 64;
 const canGeometry = new THREE.LatheGeometry(canProfile, segments);
-
 // Create aluminum material
 const canMaterial = new THREE.MeshPhysicalMaterial({
   color: 0xc0c0c0, // Aluminum color
@@ -194,10 +208,8 @@ const canMaterial = new THREE.MeshPhysicalMaterial({
   side: THREE.DoubleSide,
   transparent: false,
 });
-
 // Create can mesh
 const canMesh = new THREE.Mesh(canGeometry, canMaterial);
-
 // Create a separate material for the top cap with customizable color
 const topCapColor = 0xc0c0c0; // Example color (red), change as needed
 const topCapMaterial = new THREE.MeshPhysicalMaterial({
@@ -209,35 +221,79 @@ const topCapMaterial = new THREE.MeshPhysicalMaterial({
   side: THREE.DoubleSide,
   transparent: false,
 });
-
 // Create top cap (disc) geometry
 const topCapGeometry = new THREE.CircleGeometry(topRadius - bevelRadius, segments);
 const topCapMesh = new THREE.Mesh(topCapGeometry, topCapMaterial);
-
 // Position the top cap
 topCapMesh.rotation.x = -Math.PI / 2; // Align the disc horizontally
 topCapMesh.position.y = totalHeight - bevelRadius; // Place it at the correct height
-
 // Add top cap to the can
 canMesh.add(topCapMesh);
-
 // Create bottom cap (disc) geometry
 const bottomCapGeometry = new THREE.CircleGeometry(bottomRadius - bevelRadius, segments);
 const bottomCapMesh = new THREE.Mesh(bottomCapGeometry, canMaterial);
-
 // Position the bottom cap
 bottomCapMesh.rotation.x = Math.PI / 2; // Align the disc horizontally
 bottomCapMesh.position.y = bevelRadius; // Place it at the correct height
-
 // Add bottom cap to the can
 canMesh.add(bottomCapMesh);
-
 // Position and add can to scene
 canMesh.position.set(6, 2, -1);
 scene.add(canMesh);
 
+const loaderIbri = new FontLoader();
+loaderIbri.load('fonts/commissioner-extrabold-regular.json', function (font) {
+    const textGeo = new TextGeometry('Ibri', {
+        font: font,
+        size: 0.2,
+        depth: 0,
+        curveSegments: 10,
+        bevelThickness: 0.01,
+        bevelSize: 0.01,
+        bevelEnabled: true
+    });
+    textGeo.computeBoundingBox();
+    const textMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0xffffff } );
+    const mesh = new THREE.Mesh( textGeo, textMaterial );
+    // mesh.position.set(5.9, 2.15, -0.85)
+    mesh.position.set(5.75, 2.6, -1)
+
+    scene.add(mesh);
+});
+
+// const loaderIbri = new FontLoader();
+// loaderIbri.load('fonts/commissioner-extrabold-regular.json', function (font) {
+//     const radius = 1.0; 
+//     const text = 'Ibri'; 
+//     const angleStep = Math.PI / 8; 
+
+//     text.split('').forEach((char, i) => {
+//         const charGeo = new TextGeometry(char, {
+//             font: font,
+//             size: 0.2,
+//             depth: 0,
+//             curveSegments: 10,
+//             bevelThickness: 0.01,
+//             bevelSize: 0.01,
+//             bevelEnabled: true
+//         });
+
+//         const charMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
+//         const charMesh = new THREE.Mesh(charGeo, charMaterial);
+
+//         const angle = i * angleStep - (text.length - 1) * angleStep / 2;
 
 
+//         charMesh.position.x = Math.cos(angle) * radius;
+//         charMesh.position.y = Math.sin(angle) * radius;
+//         charMesh.position.z = 0;
+
+
+//         charMesh.rotation.z = angle;
+
+//         scene.add(charMesh);
+//     });
+// });
 
 // Light
 const light = new THREE.DirectionalLight(0xffffff, 3);
@@ -245,11 +301,18 @@ light.castShadow = true
 light.position.set(40, 60, 10);
 scene.add(light);
 
+scene.fog = new THREE.Fog(0xffc8d2, 0.1, 40);
+
+
 // Animation Loop
 function animate() {
     controls.update(); // Update controls for damping effect
     renderer.render(scene, camera);
     renderer.setAnimationLoop(animate);
+
+    const time = Date.now() * 0.001;
+    scene.fog.near = 5 + Math.sin(time) * 5;
+    scene.fog.far = 60 + Math.cos(time) * 5;
 }
 
 if (WebGL.isWebGL2Available()) {

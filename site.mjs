@@ -162,6 +162,8 @@ function Layout(tit, desc, img, ...chi) {
       // E.script.props({src: `https://unpkg.com/three@0.146.0/examples/js/controls/OrbitControls.js`}),
       // E.script.props({src: `https://unpkg.com/three@0.146.0/examples/js/geometries/DecalGeometry.js`}),
       // E.script.props({src: `https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js`}),
+      // E.script.props({src: `https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/jsm/loaders/FontLoader.js`}),
+      // E.script.props({src: `https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js`}),
       // E.script.props({src: `https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/FontLoader.js`}),
       // E.script.props({src: `https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/geometries/TextGeometry.js`}),
       E.script.props({type: `module`, src: `/browser.mjs`, defer: ``}),
