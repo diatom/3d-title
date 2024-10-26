@@ -49,12 +49,10 @@ function createChessBoard(size, tileSize, lineWidth) {
         for (let z = 0; z < size; z++) {
             // Определение цвета плитки
             const color = (x + z) % 2 === 0 ? 0xFFFFFF : 0x000000; // Белый и черный цвет
-
             // Создание плитки с небольшой высотой для объема
             const tileGeometry = new THREE.BoxGeometry(tileSize, 0.1, tileSize); // Высота плитки 0.1
             const tileMaterial = new THREE.MeshStandardMaterial({ color: color });
             const tile = new THREE.Mesh(tileGeometry, tileMaterial);
-
             // Позиционирование плитки
             tile.position.set(x * tileSize - (size * tileSize) / 2 + tileSize / 2, 0.05, z * tileSize - (size * tileSize) / 2 + tileSize / 2);
             boardGroup.add(tile);
@@ -142,14 +140,6 @@ textureLoaderBru.load('images/pic-bruegel.jpg', function(texture) {
     scene.add(rightFrame);
 });
 
-// Box
-// const boxGeometry = new THREE.BoxGeometry(4, 2, 2)
-// const boxMaterial = new THREE.MeshStandardMaterial({color: 0x00ffff})
-// const box = new THREE.Mesh(boxGeometry, boxMaterial)
-// box.position.set(5, 1, -1)
-// box.castShadow = true
-// scene.add(box)
-
 
 // Table
 function createTableLegs() {
@@ -160,15 +150,17 @@ function createTableLegs() {
     const legGeometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radialSegments);
     const legMaterial = new THREE.MeshPhongMaterial({ color: 0x8B4513 }); // Коричневый цвет для имитации дерева
     const positions = [
-        { x: 5.8, y: 0, z: 0.2 },
-        { x: 5.8, y: 0, z: -2.2 },
-        { x: 4.2, y: 0, z: 0.2 },
-        { x: 4.2, y: 0, z: -2.2 }
+        { x: 5.8, y: 0, z: -0.2, rz: 36, ry: -72, rx: -72 }, //нижняя левая
+        { x: 5.8, y: 0, z: -1.8, rz: 36, ry: 72, rx: 72 }, //нижняя правая
+        { x: 4.2, y: 0, z: -0.2, rz: -36, ry: 72, rx: -72 }, //верхняя левая
+        { x: 4.2, y: 0, z: -1.8, rz: -36, ry: -72, rx: 72 } //верхняя правая
     ];
     positions.forEach(pos => {
         const tableLeg = new THREE.Mesh(legGeometry, legMaterial);
-        tableLeg.position.set(pos.x, pos.y + height / 2, pos.z); // Поднимаем ножку на половину высоты
-        tableLeg.rotation.y = Math.PI / 18; // Наклоняем ножку на 10 градусов от оси Y
+        tableLeg.position.set(pos.x, pos.y + height / 2, pos.z);
+        tableLeg.rotation.y = Math.PI / pos.ry;
+        tableLeg.rotation.z = Math.PI / pos.rz;
+        tableLeg.rotation.x = Math.PI / pos.rx;
         scene.add(tableLeg);
     });
 
