@@ -77,10 +77,10 @@ const wallMaterialLeft = new THREE.MeshBasicMaterial({ color: 0xa1abad });
 const wallMaterialBack = new THREE.MeshBasicMaterial({ color: 0x8c0b0b });
 
 // Left Wall
-const leftWall = new THREE.Mesh(wallGeometryLeft, wallMaterialLeft);
-leftWall.position.set(0, 5, 4); // Позиция левой стены
-leftWall.rotation.y = Math.PI / 2; // Поворот стены на 90 градусов
-scene.add(leftWall);
+// const leftWall = new THREE.Mesh(wallGeometryLeft, wallMaterialLeft);
+// leftWall.position.set(0, 5, 4); // Позиция левой стены
+// leftWall.rotation.y = Math.PI / 2; // Поворот стены на 90 градусов
+// scene.add(leftWall);
 
 // Back Wall
 const backWall = new THREE.Mesh(wallGeometryBack, wallMaterialBack);
@@ -124,57 +124,95 @@ textureLoaderBru.load('images/pic-bruegel.jpg', function(texture) {
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const geometry = new THREE.PlaneGeometry(5, 3.5);
     const plane = new THREE.Mesh(geometry, material);
-    plane.position.set(5, 4, -5.9)
+    plane.position.set(5, 4, -5.9);
     scene.add(plane);
+    const frameThickness = 0.1;
+    const frameColor = 0xffffff;
+    const topFrame = new THREE.Mesh(new THREE.PlaneGeometry(5 + frameThickness * 2, frameThickness), new THREE.MeshBasicMaterial({ color: frameColor }));
+    const bottomFrame = new THREE.Mesh(new THREE.PlaneGeometry(5 + frameThickness * 2, frameThickness), new THREE.MeshBasicMaterial({ color: frameColor }));
+    const leftFrame = new THREE.Mesh(new THREE.PlaneGeometry(frameThickness, 3.5 + frameThickness * 2), new THREE.MeshBasicMaterial({ color: frameColor }));
+    const rightFrame = new THREE.Mesh(new THREE.PlaneGeometry(frameThickness, 3.5 + frameThickness * 2), new THREE.MeshBasicMaterial({ color: frameColor }));
+    topFrame.position.set(5, 4 + (3.5 / 2) + (frameThickness / 2), -5.9);
+    bottomFrame.position.set(5, 4 - (3.5 / 2) - (frameThickness / 2), -5.9);
+    leftFrame.position.set(5 - (5 / 2) - (frameThickness / 2), 4, -5.9);
+    rightFrame.position.set(5 + (5 / 2) + (frameThickness / 2), 4, -5.9);
+    scene.add(topFrame);
+    scene.add(bottomFrame);
+    scene.add(leftFrame);
+    scene.add(rightFrame);
 });
 
 // Box
-const boxGeometry = new THREE.BoxGeometry(4, 2, 2)
-const boxMaterial = new THREE.MeshStandardMaterial({color: 0x00ffff})
-const box = new THREE.Mesh(boxGeometry, boxMaterial)
-box.position.set(5, 1, -1)
-box.castShadow = true
-scene.add(box)
+// const boxGeometry = new THREE.BoxGeometry(4, 2, 2)
+// const boxMaterial = new THREE.MeshStandardMaterial({color: 0x00ffff})
+// const box = new THREE.Mesh(boxGeometry, boxMaterial)
+// box.position.set(5, 1, -1)
+// box.castShadow = true
+// scene.add(box)
 
-// Book
-function createBook(position) {
-    const bookWidth = 0.75; // Ширина книги
-    const bookHeight = 1; // Высота книги
-    const bookThickness = 0.2; // Толщина книги
-    // Создание обложки книги
-    const coverMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // Коричневый цвет для обложки
-    const coverGeometryFront = new THREE.BoxGeometry(bookWidth, bookHeight, bookThickness);
-    const coverFront = new THREE.Mesh(coverGeometryFront, coverMaterial);
-    coverFront.position.set(position.x, position.y, position.z + bookThickness / 2); // Позиция передней обложки
-    const coverGeometryBack = new THREE.BoxGeometry(bookWidth, bookHeight, bookThickness);
-    const coverBack = new THREE.Mesh(coverGeometryBack, coverMaterial);
-    coverBack.position.set(position.x, position.y, position.z - bookThickness / 2); // Позиция задней обложки
-    // Создание страниц книги
-    const pageMaterial = new THREE.MeshStandardMaterial({ color: 0xFFFFFF }); // Белый цвет для страниц
-    const pageGeometry = new THREE.BoxGeometry(bookWidth - 0.02, bookHeight - 0.02, bookThickness - 0.01); // Немного меньше по размерам
-    const pages = new THREE.Mesh(pageGeometry, pageMaterial);
-    pages.position.set(position.x, position.y, position.z); // Позиция страниц
-    // Поворот книги на 90 градусов вокруг оси X
-    coverFront.rotation.x = Math.PI / 2; // Поворот передней обложки
-    coverBack.rotation.x = Math.PI / 2; // Поворот задней обложки
-    pages.rotation.x = Math.PI / 2; // Поворот страниц
-    // Добавляем все части книги в сцену
-    scene.add(coverFront);
-    scene.add(coverBack);
-    scene.add(pages);
+
+// Table
+function createTableLegs() {
+    const radiusTop = 0.1; // Радиус верхней части конуса
+    const radiusBottom = 0.05; // Радиус нижней части конуса
+    const height = 2.0; // Высота ножки
+    const radialSegments = 50; // Количество сегментов для сглаживания
+    const legGeometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radialSegments);
+    const legMaterial = new THREE.MeshPhongMaterial({ color: 0x8B4513 }); // Коричневый цвет для имитации дерева
+    const positions = [
+        { x: 5.8, y: 0, z: 0.2 },
+        { x: 5.8, y: 0, z: -2.2 },
+        { x: 4.2, y: 0, z: 0.2 },
+        { x: 4.2, y: 0, z: -2.2 }
+    ];
+    positions.forEach(pos => {
+        const tableLeg = new THREE.Mesh(legGeometry, legMaterial);
+        tableLeg.position.set(pos.x, pos.y + height / 2, pos.z); // Поднимаем ножку на половину высоты
+        tableLeg.rotation.y = Math.PI / 18; // Наклоняем ножку на 10 градусов от оси Y
+        scene.add(tableLeg);
+    });
+
+    const tabletopRadius = 1.8;
+    const tabletopThickness = 0.1;
+    const tabletopGeometry = new THREE.CylinderGeometry(tabletopRadius, tabletopRadius, tabletopThickness, radialSegments);
+    const tabletopMaterial = new THREE.MeshPhongMaterial({
+        color: 0xFFFFFF,
+        transparent: true,
+        opacity: 0.7,
+        side: THREE.DoubleSide // Чтобы грани были видны с обеих сторон
+    });
+    const tabletop = new THREE.Mesh(tabletopGeometry, tabletopMaterial);
+    tabletop.position.set(5, height + tabletopThickness / 2, -1);
+    scene.add(tabletop);
 }
-const bookPosition = new THREE.Vector3(4, 2.03, -1); // Задайте нужные координаты
-createBook(bookPosition);
+createTableLegs();
 
-// Jpg cover
+
+// Magazine
+let magazine;
+function createFrame() {
+    const width = 0.75;
+    const height = 1;
+    const depth = 0.1;
+    const frameGeometry = new THREE.BoxGeometry(width, height, depth);
+    const frameMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+    magazine = new THREE.Mesh(frameGeometry, frameMaterial);
+    magazine.position.set(4.5, 2.13, -1);
+    magazine.rotation.x = Math.PI / -2;
+    magazine.rotation.z += Math.PI / 6;
+    scene.add(magazine);
+}
+createFrame();
+
+// Cover magazine
 const textureLoaderCover = new THREE.TextureLoader();
 textureLoaderCover.load('images/cover.jpg', function(texture) {
     const material = new THREE.MeshBasicMaterial({ map: texture });
     const geometry = new THREE.PlaneGeometry(0.75, 1);
     const plane = new THREE.Mesh(geometry, material);
-    plane.position.set(4, 2.75, -1)
-    // plane.rotation.x = Math.PI / 2;
-    // plane.rotation.y = Math.PI / 2;
+    plane.position.set(4.5, 2.182, -1)
+    plane.rotation.x = Math.PI / -2;
+    plane.rotation.z += Math.PI / 6;
     scene.add(plane);
 });
 
@@ -200,7 +238,7 @@ const segments = 64;
 const canGeometry = new THREE.LatheGeometry(canProfile, segments);
 // Create aluminum material
 const canMaterial = new THREE.MeshPhysicalMaterial({
-  color: 0xc0c0c0, // Aluminum color
+  color: 0x3A7189, // Aluminum color
   metalness: 0.3,
   roughness: 0.3,
   clearcoat: 1,
@@ -238,9 +276,12 @@ bottomCapMesh.position.y = bevelRadius; // Place it at the correct height
 // Add bottom cap to the can
 canMesh.add(bottomCapMesh);
 // Position and add can to scene
-canMesh.position.set(6, 2, -1);
+canMesh.position.set(6, 2.1, -1);
 scene.add(canMesh);
 
+
+// Ibri logo
+let mesh;
 const loaderIbri = new FontLoader();
 loaderIbri.load('fonts/commissioner-extrabold-regular.json', function (font) {
     const textGeo = new TextGeometry('Ibri', {
@@ -252,48 +293,15 @@ loaderIbri.load('fonts/commissioner-extrabold-regular.json', function (font) {
         bevelSize: 0.01,
         bevelEnabled: true
     });
-    textGeo.computeBoundingBox();
-    const textMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0xffffff } );
-    const mesh = new THREE.Mesh( textGeo, textMaterial );
-    // mesh.position.set(5.9, 2.15, -0.85)
-    mesh.position.set(5.75, 2.6, -1)
-
+    textGeo.center();
+    const textMaterial = new THREE.MeshPhongMaterial({ color: 0xffb7b4, specular: 0xffffff });
+    mesh = new THREE.Mesh(textGeo, textMaterial);
+    mesh.position.set(6, 2.7, -1);
+    mesh.castShadow = true
     scene.add(mesh);
+    animate();
 });
 
-// const loaderIbri = new FontLoader();
-// loaderIbri.load('fonts/commissioner-extrabold-regular.json', function (font) {
-//     const radius = 1.0; 
-//     const text = 'Ibri'; 
-//     const angleStep = Math.PI / 8; 
-
-//     text.split('').forEach((char, i) => {
-//         const charGeo = new TextGeometry(char, {
-//             font: font,
-//             size: 0.2,
-//             depth: 0,
-//             curveSegments: 10,
-//             bevelThickness: 0.01,
-//             bevelSize: 0.01,
-//             bevelEnabled: true
-//         });
-
-//         const charMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000, specular: 0xffffff });
-//         const charMesh = new THREE.Mesh(charGeo, charMaterial);
-
-//         const angle = i * angleStep - (text.length - 1) * angleStep / 2;
-
-
-//         charMesh.position.x = Math.cos(angle) * radius;
-//         charMesh.position.y = Math.sin(angle) * radius;
-//         charMesh.position.z = 0;
-
-
-//         charMesh.rotation.z = angle;
-
-//         scene.add(charMesh);
-//     });
-// });
 
 // Light
 const light = new THREE.DirectionalLight(0xffffff, 3);
@@ -301,18 +309,19 @@ light.castShadow = true
 light.position.set(40, 60, 10);
 scene.add(light);
 
-scene.fog = new THREE.Fog(0xffc8d2, 0.1, 40);
+scene.fog = new THREE.Fog(0xffc8d2, 0.8, 20);
 
-
-// Animation Loop
 function animate() {
-    controls.update(); // Update controls for damping effect
+    controls.update();
     renderer.render(scene, camera);
     renderer.setAnimationLoop(animate);
-
     const time = Date.now() * 0.001;
     scene.fog.near = 5 + Math.sin(time) * 5;
     scene.fog.far = 60 + Math.cos(time) * 5;
+
+    if (mesh) {
+        mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.01);
+    }
 }
 
 if (WebGL.isWebGL2Available()) {
