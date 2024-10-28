@@ -76,6 +76,7 @@ function createChessBoard(size, tileSize, lineWidth) {
             const tile = new THREE.Mesh(tileGeometry, tileMaterial);
             // Позиционирование плитки
             tile.position.set(x * tileSize - (size * tileSize) / 2 + tileSize / 2, 0.05, z * tileSize - (size * tileSize) / 2 + tileSize / 2);
+            tile.receiveShadow = true;
             boardGroup.add(tile);
         }
     }
@@ -89,11 +90,11 @@ scene.add(chessBoard);
 
 
 // Wall
-const wallGeometryLeft = new THREE.PlaneGeometry(20, 10);
-const wallGeometryBack = new THREE.PlaneGeometry(20, 10);
-const wallMaterialLeft = new THREE.MeshBasicMaterial({ color: 0xa1abad });
+// const wallGeometryLeft = new THREE.PlaneGeometry(20, 10);
+// const wallMaterialLeft = new THREE.MeshBasicMaterial({ color: 0xa1abad });
 // const wallMaterialLeft = new THREE.MeshBasicMaterial({ color: 0xd63636 });
-const wallMaterialBack = new THREE.MeshBasicMaterial({ color: 0x8c0b0b });
+const wallGeometryBack = new THREE.PlaneGeometry(20, 10);
+const wallMaterialBack = new THREE.MeshStandardMaterial({ color: 0x8c0b0b });
 
 // Left Wall
 // const leftWall = new THREE.Mesh(wallGeometryLeft, wallMaterialLeft);
@@ -103,8 +104,10 @@ const wallMaterialBack = new THREE.MeshBasicMaterial({ color: 0x8c0b0b });
 
 // Back Wall
 const backWall = new THREE.Mesh(wallGeometryBack, wallMaterialBack);
-backWall.position.set(10, 5, -6); // Позиция задней стены
-backWall.rotation.y = 0; // Поворот стены (по умолчанию)
+backWall.position.set(10, 5, -6);
+backWall.rotation.y = 0;
+// backWall.castShadow = true;
+backWall.receiveShadow = true;
 scene.add(backWall);
 
 
@@ -140,26 +143,72 @@ loader.load('fonts/caveat_regular.json', function (font) {
 // Jpg Bruegel
 const textureLoaderBru = new THREE.TextureLoader();
 textureLoaderBru.load('images/pic-bruegel.jpg', function(texture) {
-    const material = new THREE.MeshBasicMaterial({ map: texture });
+    const material = new THREE.MeshStandardMaterial({ map: texture });
     const geometry = new THREE.PlaneGeometry(5, 3.5);
     const plane = new THREE.Mesh(geometry, material);
-    plane.position.set(5, 4, -5.9);
+    plane.position.set(5, 4, -5.95);
     scene.add(plane);
-    const frameThickness = 0.1;
+    const frameThickness = 0.1; // Толщина рамки
     const frameColor = 0xffffff;
-    const topFrame = new THREE.Mesh(new THREE.PlaneGeometry(5 + frameThickness * 2, frameThickness), new THREE.MeshBasicMaterial({ color: frameColor }));
-    const bottomFrame = new THREE.Mesh(new THREE.PlaneGeometry(5 + frameThickness * 2, frameThickness), new THREE.MeshBasicMaterial({ color: frameColor }));
-    const leftFrame = new THREE.Mesh(new THREE.PlaneGeometry(frameThickness, 3.5 + frameThickness * 2), new THREE.MeshBasicMaterial({ color: frameColor }));
-    const rightFrame = new THREE.Mesh(new THREE.PlaneGeometry(frameThickness, 3.5 + frameThickness * 2), new THREE.MeshBasicMaterial({ color: frameColor }));
-    topFrame.position.set(5, 4 + (3.5 / 2) + (frameThickness / 2), -5.9);
-    bottomFrame.position.set(5, 4 - (3.5 / 2) - (frameThickness / 2), -5.9);
-    leftFrame.position.set(5 - (5 / 2) - (frameThickness / 2), 4, -5.9);
-    rightFrame.position.set(5 + (5 / 2) + (frameThickness / 2), 4, -5.9);
+    // Создаем верхнюю и нижнюю части рамки с BoxGeometry
+    const topFrame = new THREE.Mesh(new THREE.BoxGeometry(5 + frameThickness * 2, frameThickness, 0.3), new THREE.MeshStandardMaterial({ color: frameColor }));
+    const bottomFrame = new THREE.Mesh(new THREE.BoxGeometry(5 + frameThickness * 2, frameThickness, 0.3), new THREE.MeshStandardMaterial({ color: frameColor }));
+    // Создаем боковые части рамки с BoxGeometry
+    const leftFrame = new THREE.Mesh(new THREE.BoxGeometry(frameThickness, 3.5 + frameThickness * 2, 0.3), new THREE.MeshStandardMaterial({ color: frameColor }));
+    const rightFrame = new THREE.Mesh(new THREE.BoxGeometry(frameThickness, 3.5 + frameThickness * 2, 0.3), new THREE.MeshStandardMaterial({ color: frameColor }));
+    // Позиционирование верхней и нижней рамки
+    topFrame.position.set(5, 4 + (3.5 / 2) + (frameThickness / 2), -5.95);
+    bottomFrame.position.set(5, 4 - (3.5 / 2) - (frameThickness / 2), -5.95);
+    // Позиционирование боковых рамок
+    leftFrame.position.set(5 - (5 / 2) - (frameThickness / 2), 4, -5.95);
+    rightFrame.position.set(5 + (5 / 2) + (frameThickness / 2), 4, -5.95);
+    // Добавляем все части рамки в сцену
     scene.add(topFrame);
     scene.add(bottomFrame);
     scene.add(leftFrame);
     scene.add(rightFrame);
+    topFrame.castShadow = true;
+    topFrame.receiveShadow = true;
+    bottomFrame.castShadow = true;
+    bottomFrame.receiveShadow = true;
+    leftFrame.castShadow = true;
+    leftFrame.receiveShadow = true;
+    rightFrame.castShadow = true;
+    rightFrame.receiveShadow = true;
+    plane.castShadow = true;
+    plane.receiveShadow = true;
 });
+
+function createTextPanel(scene) {
+    const loader = new FontLoader();
+    // Загружаем шрифт
+    loader.load('fonts/commissioner-regular.json', function (font) {
+        const textGeo = new TextGeometry('The Hunters\nin the Snow.\nPieter Bruegel\nthe Elder.\n1555', {
+            font: font,
+            size: 0.06,
+            depth: 0,
+            height: 0.05,
+            curveSegments: 10,
+            bevelThickness: 0.01,
+            bevelSize: 0.001,
+            bevelEnabled: true
+        });
+        const textMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
+        const textMesh = new THREE.Mesh(textGeo, textMaterial);
+        textMesh.position.set(-0.3, 0.3, 0.05);
+        const panelGeometry = new THREE.BoxGeometry(0.8, 1, 0.05);
+        const panelMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+        const panelMesh = new THREE.Mesh(panelGeometry, panelMaterial);
+        panelMesh.add(textMesh);
+        textMesh.castShadow = true;
+        textMesh.receiveShadow = true;
+        panelMesh.position.set(8.3, 4, -5.95);
+        scene.add(panelMesh);
+        panelMesh.castShadow = true;
+        panelMesh.receiveShadow = true;
+    });
+}
+createTextPanel(scene)
 
 
 // Table
@@ -183,6 +232,7 @@ function createTableLegs() {
         tableLeg.rotation.z = Math.PI / pos.rz;
         tableLeg.rotation.x = Math.PI / pos.rx;
         scene.add(tableLeg);
+        tableLeg.castShadow = true;
     });
 
     const tabletopRadius = 1.8;
@@ -191,12 +241,14 @@ function createTableLegs() {
     const tabletopMaterial = new THREE.MeshPhongMaterial({
         color: 0xFFFFFF,
         transparent: true,
-        opacity: 0.7,
+        opacity: 0.5,
         side: THREE.DoubleSide // Чтобы грани были видны с обеих сторон
     });
     const tabletop = new THREE.Mesh(tabletopGeometry, tabletopMaterial);
     tabletop.position.set(5, height + tabletopThickness / 2, -1);
     scene.add(tabletop);
+    tabletop.castShadow = true;
+    tabletop.receiveShadow = true;
 }
 createTableLegs();
 
@@ -210,88 +262,83 @@ function createFrame() {
     const frameGeometry = new THREE.BoxGeometry(width, height, depth);
     const frameMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
     magazine = new THREE.Mesh(frameGeometry, frameMaterial);
-    magazine.position.set(4.5, 2.13, -1);
+    magazine.position.set(4.5, 2.16, -1);
     magazine.rotation.x = Math.PI / -2;
     magazine.rotation.z += Math.PI / 6;
     scene.add(magazine);
+    magazine.castShadow = true;
+    magazine.receiveShadow = true;
 }
 createFrame();
 
 // Cover magazine
 const textureLoaderCover = new THREE.TextureLoader();
 textureLoaderCover.load('images/cover.jpg', function(texture) {
-    const material = new THREE.MeshBasicMaterial({ map: texture });
+    const material = new THREE.MeshStandardMaterial({ map: texture });
     const geometry = new THREE.PlaneGeometry(0.75, 1);
     const plane = new THREE.Mesh(geometry, material);
-    plane.position.set(4.5, 2.182, -1)
+    plane.castShadow = true;
+    plane.receiveShadow = true;
+    plane.position.set(4.5, 2.211, -1)
     plane.rotation.x = Math.PI / -2;
     plane.rotation.z += Math.PI / 6;
     scene.add(plane);
 });
 
 // Aluminum can
-const scale = 0.05;
-const topRadius = 3 * scale;
-const bottomRadius = 3 * scale;
-const bodyHeight = 9 * scale;
-const bevelRadius = 0.5 * scale;
-const totalHeight = bodyHeight + 2 * bevelRadius;
-// Create can profile with bevels on both ends
-const canProfile = [];
-// Top bevel
-canProfile.push(new THREE.Vector2(topRadius - bevelRadius, totalHeight));
-canProfile.push(new THREE.Vector2(topRadius, totalHeight - bevelRadius));
-// Body
-canProfile.push(new THREE.Vector2(topRadius, bevelRadius));
-canProfile.push(new THREE.Vector2(bottomRadius, bevelRadius));
-// Bottom bevel
-canProfile.push(new THREE.Vector2(bottomRadius - bevelRadius, 0));
-// Create LatheGeometry
-const segments = 64;
-const canGeometry = new THREE.LatheGeometry(canProfile, segments);
-// Create aluminum material
-const canMaterial = new THREE.MeshPhysicalMaterial({
-  color: 0x3A7189, // Aluminum color
-  metalness: 0.3,
-  roughness: 0.3,
-  clearcoat: 1,
-  clearcoatRoughness: 0.1,
-  side: THREE.DoubleSide,
-  transparent: false,
-});
-// Create can mesh
-const canMesh = new THREE.Mesh(canGeometry, canMaterial);
-// Create a separate material for the top cap with customizable color
-const topCapColor = 0xc0c0c0; // Example color (red), change as needed
-const topCapMaterial = new THREE.MeshPhysicalMaterial({
-  color: topCapColor,
-  metalness: 0.3,
-  roughness: 0.3,
-  clearcoat: 1,
-  clearcoatRoughness: 0.1,
-  side: THREE.DoubleSide,
-  transparent: false,
-});
-// Create top cap (disc) geometry
-const topCapGeometry = new THREE.CircleGeometry(topRadius - bevelRadius, segments);
-const topCapMesh = new THREE.Mesh(topCapGeometry, topCapMaterial);
-// Position the top cap
-topCapMesh.rotation.x = -Math.PI / 2; // Align the disc horizontally
-topCapMesh.position.y = totalHeight - bevelRadius; // Place it at the correct height
-// Add top cap to the can
-canMesh.add(topCapMesh);
-// Create bottom cap (disc) geometry
-const bottomCapGeometry = new THREE.CircleGeometry(bottomRadius - bevelRadius, segments);
-const bottomCapMesh = new THREE.Mesh(bottomCapGeometry, canMaterial);
-// Position the bottom cap
-bottomCapMesh.rotation.x = Math.PI / 2; // Align the disc horizontally
-bottomCapMesh.position.y = bevelRadius; // Place it at the correct height
-// Add bottom cap to the can
-canMesh.add(bottomCapMesh);
-// Position and add can to scene
-canMesh.position.set(6, 2.1, -1);
-scene.add(canMesh);
+function createAluminumCan(scene) {
+    const scale = 0.05;
+    const topRadius = 3 * scale;
+    const bottomRadius = 3 * scale;
+    const bodyHeight = 9 * scale;
+    const bevelRadius = 0.5 * scale;
+    const totalHeight = bodyHeight + 2 * bevelRadius;
+    const canProfile = [];
+    canProfile.push(new THREE.Vector2(topRadius - bevelRadius, totalHeight));
+    canProfile.push(new THREE.Vector2(topRadius, totalHeight - bevelRadius));
+    canProfile.push(new THREE.Vector2(topRadius, bevelRadius));
+    canProfile.push(new THREE.Vector2(bottomRadius, bevelRadius));
+    canProfile.push(new THREE.Vector2(bottomRadius - bevelRadius, 0));
+    const segments = 64;
+    const canGeometry = new THREE.LatheGeometry(canProfile, segments);
+    const canMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x3A7189,
+      metalness: 0.3,
+      roughness: 0.3,
+      clearcoat: 1,
+      clearcoatRoughness: 0.1,
+      side: THREE.DoubleSide,
+      transparent: false,
+    });
 
+    const canMesh = new THREE.Mesh(canGeometry, canMaterial);
+    const topCapColor = 0xc0c0c0; // Example color (red), change as needed
+    const topCapMaterial = new THREE.MeshPhysicalMaterial({
+      color: topCapColor,
+      metalness: 0.3,
+      roughness: 0.3,
+      clearcoat: 1,
+      clearcoatRoughness: 0.1,
+      side: THREE.DoubleSide,
+      transparent: false,
+    });
+
+    const topCapGeometry = new THREE.CircleGeometry(topRadius - bevelRadius, segments);
+    const topCapMesh = new THREE.Mesh(topCapGeometry, topCapMaterial);
+    topCapMesh.rotation.x = -Math.PI / 2; // Align the disc horizontally
+    topCapMesh.position.y = totalHeight - bevelRadius; // Place it at the correct height
+    canMesh.add(topCapMesh);
+    const bottomCapGeometry = new THREE.CircleGeometry(bottomRadius - bevelRadius, segments);
+    const bottomCapMesh = new THREE.Mesh(bottomCapGeometry, canMaterial);
+    bottomCapMesh.rotation.x = Math.PI / 2; // Align the disc horizontally
+    bottomCapMesh.position.y = bevelRadius; // Place it at the correct height
+    canMesh.add(bottomCapMesh);
+    canMesh.position.set(6, 2.1, -1);
+    scene.add(canMesh);
+    canMesh.castShadow = true;
+    canMesh.receiveShadow = true;
+}
+createAluminumCan(scene)
 
 // Ibri logo
 let mesh;
@@ -317,28 +364,21 @@ loaderIbri.load('fonts/commissioner-extrabold-regular.json', function (font) {
 
 
 // Light
-const light = new THREE.DirectionalLight(0xffffff, 3);
-light.castShadow = true
-light.position.set(40, 60, 10);
-scene.add(light);
+const light1 = new THREE.DirectionalLight(0xffffff, 3);
+light1.castShadow = true
+light1.position.set(40, 60, 10);
+scene.add(light1);
 
-scene.fog = new THREE.Fog(0xffc8d2, 0.8, 10);
 
-// function animate() {
-//     controls.update();
-//     renderer.render(scene, camera);
-//     renderer.setAnimationLoop(animate);
-//     const time = Date.now() * 0.001;
-//     scene.fog.near = 5 + Math.sin(time) * 5;
-//     scene.fog.far = 60 + Math.cos(time) * 5;
+// const light2 = new THREE.DirectionalLight(0xffffff, 3);
+// light2.castShadow = true
+// light2.position.set(5, 35, 50);
+// scene.add(light2);
 
-//     if (mesh) {
-//         mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.01);
-//     }
-// }
+
+// scene.fog = new THREE.Fog(0xffc8d2, 0.3, 30);
 
 const clock = new THREE.Clock();
-
 function animateStars() {
     const time = clock.getElapsedTime();
     // Получаем атрибуты позиции и цвета звёзд
@@ -372,17 +412,13 @@ function animateStars() {
 }
 animateStars();
 
-
-
-
-
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
     renderer.render(scene, camera);
-    const time = Date.now() * 0.002;
-    scene.fog.near = 5 + Math.sin(time) * 5;
-    scene.fog.far = 60 + Math.cos(time) * 5;
+    // const time = Date.now() * 0.001;
+    // scene.fog.near = 5 + Math.sin(time) * 5;
+    // scene.fog.far = 30 + Math.cos(time) * 5;
    
     if (mesh) {
         mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.01);
