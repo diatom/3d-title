@@ -7,27 +7,31 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
-let scene, camera, renderer;
+
+let points, starsGroup
+
 const stars = [];
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.01, 1000);
+camera.position.set(12, 10, 8);
 
-function init() {
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.01, 1000);
-    camera.position.set(12, 10, 8);
+const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.shadowMap.enabled = true
+renderer.setClearColor(0x000000)
+document.getElementById('container').appendChild(renderer.domElement);
 
-    const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.shadowMap.enabled = true
-    document.getElementById('container').appendChild(renderer.domElement);
-    createStars(100);
-    // animate();
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+controls.dampingFactor = 0.25;
+controls.screenSpacePanning = false; // Prevents panning in screen space
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    controls.dampingFactor = 0.25;
-    controls.screenSpacePanning = false; // Prevents panning in screen space
-}
+starsGroup = new THREE.Group();
+createStars(1000);
+starsGroup.position.set(-10, 2, 2);
+scene.add(starsGroup);
+
 function createStars(count) {
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(count * 3); // x, y, z для каждой звезды
@@ -35,9 +39,9 @@ function createStars(count) {
 
     for (let i = 0; i < count; i++) {
         // Случайные позиции для звёзд
-        positions[i * 3] = (Math.random() - 0.5) * 10; // x
-        positions[i * 3 + 1] = (Math.random() - 0.5) * 10; // y
-        positions[i * 3 + 2] = (Math.random() - 0.5) * 10; // z
+        positions[i * 3] = (Math.random() - 0.5) * 20; // x
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 15; // y
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 40; // z
         // Случайный цвет для каждой звезды
         colors[i * 3] = Math.random(); // r
         colors[i * 3 + 1] = Math.random(); // g
@@ -46,29 +50,10 @@ function createStars(count) {
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     const material = new THREE.PointsMaterial({ size: 0.1, vertexColors: true });
-    const points = new THREE.Points(geometry, material);
-    scene.add(points);
+    points = new THREE.Points(geometry, material);
+    // scene.add(points);
+    starsGroup.add(points);
 }
-
-
-// // Scene
-// const scene = new THREE.Scene();
-// const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.01, 1000);
-// camera.position.set(12, 10, 8);
-
-// // Render
-// const renderer = new THREE.WebGLRenderer({antialias: true});
-// renderer.setSize(window.innerWidth, window.innerHeight);
-// renderer.setPixelRatio(window.devicePixelRatio);
-// renderer.shadowMap.enabled = true
-// // renderer.setClearColor(0xb02828);
-// document.getElementById('container').appendChild(renderer.domElement);
-
-// Initialize OrbitControls
-// const controls = new OrbitControls(camera, renderer.domElement);
-// controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-// controls.dampingFactor = 0.25;
-// controls.screenSpacePanning = false; // Prevents panning in screen space
 
 // Floor
 // const floorGeometry = new THREE.PlaneGeometry(20, 20);
@@ -337,7 +322,7 @@ light.castShadow = true
 light.position.set(40, 60, 10);
 scene.add(light);
 
-scene.fog = new THREE.Fog(0xffc8d2, 0.8, 20);
+scene.fog = new THREE.Fog(0xffc8d2, 0.8, 10);
 
 // function animate() {
 //     controls.update();
@@ -352,22 +337,52 @@ scene.fog = new THREE.Fog(0xffc8d2, 0.8, 20);
 //     }
 // }
 
+const clock = new THREE.Clock();
+
+function animateStars() {
+    const time = clock.getElapsedTime();
+    // Получаем атрибуты позиции и цвета звёзд
+    const colors = points.geometry.attributes.color;
+    const positions = points.geometry.attributes.position;
+    const count = colors.count;
+
+    // Анимация яркости звёзд (случайное изменение яркости)
+    const index = Math.floor(Math.random() * count);
+    const brightness = (Math.sin(time + index) + 1) / 2;
+    colors.setX(index, colors.getX(index) * brightness);
+    colors.setY(index, colors.getY(index) * brightness);
+    colors.setZ(index, colors.getZ(index) * brightness);
+    colors.needsUpdate = true;
+
+    // Эффект движения звёзд вдоль оси x
+    for (let i = 0; i < count; i++) {
+        let x = positions.getX(i);
+        x -= 0.005; // Скорость движения звёзд по оси x
+        if (x < -10) {  // Если звезда выходит за пределы видимости с левой стороны
+            x = 10; // Сбрасываем её на правую сторону
+            positions.setY(i, (Math.random() - 0.5) * 15); // Случайная y-позиция
+            positions.setZ(i, (Math.random() - 0.5) * 40); // Случайная z-позиция
+        }
+        positions.setX(i, x);
+    }
+    positions.needsUpdate = true;
+
+    // Продолжаем анимацию
+    requestAnimationFrame(animateStars);
+}
+animateStars();
+
+
+
+
+
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
     renderer.render(scene, camera);
     const time = Date.now() * 0.002;
-    const positions = points.geometry.attributes.position.array;
-
     scene.fog.near = 5 + Math.sin(time) * 5;
     scene.fog.far = 60 + Math.cos(time) * 5;
-    
-    for (let i = 0; i < positions.length; i += 3) {
-        const scaleFactor = Math.sin(time + i) * 0.5 + 0.5; 
-        positions[i + 2] *= scaleFactor; // Изменяем Z для создания эффекта мерцания
-    }
-
-    points.geometry.attributes.position.needsUpdate = true; // Указываем Three.js обновить позиции
    
     if (mesh) {
         mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.01);
@@ -377,7 +392,6 @@ function animate() {
 
 if (WebGL.isWebGL2Available()) {
     animate();
-    init();
 } else {
     const warning = WebGL.getWebGL2ErrorMessage();
     document.getElementById('container').appendChild(warning);
