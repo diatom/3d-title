@@ -28,7 +28,7 @@ controls.dampingFactor = 0.25;
 controls.screenSpacePanning = false; // Prevents panning in screen space
 
 starsGroup = new THREE.Group();
-createStars(1000);
+createStars(300);
 starsGroup.position.set(-10, 2, 2);
 scene.add(starsGroup);
 
@@ -41,7 +41,7 @@ function createStars(count) {
         // Случайные позиции для звёзд
         positions[i * 3] = (Math.random() - 0.5) * 20; // x
         positions[i * 3 + 1] = (Math.random() - 0.5) * 15; // y
-        positions[i * 3 + 2] = (Math.random() - 0.5) * 40; // z
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 100; // z
         // Случайный цвет для каждой звезды
         colors[i * 3] = Math.random(); // r
         colors[i * 3 + 1] = Math.random(); // g
@@ -118,15 +118,20 @@ loader.load('fonts/caveat_regular.json', function (font) {
         font: font,
         size: 1,
         depth: 0.1,
+        opacity: 0.5,
         curveSegments: 10,
         bevelThickness: 0.01,
         bevelSize: 0.01,
         bevelEnabled: true
     });
     textGeo.computeBoundingBox();
-    const textMaterial = new THREE.MeshPhongMaterial( { color: 0xff0000, specular: 0xffffff } );
-    const mesh = new THREE.Mesh( textGeo, textMaterial );
-    mesh.position.set(-0.02, 5, 7)
+
+    const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00]; // Цвета для смены
+    let colorIndex = 0;
+    const textMaterial = new THREE.MeshPhongMaterial({ color: colors[colorIndex], specular: 0xffffff });
+    
+    const mesh = new THREE.Mesh(textGeo, textMaterial);
+    mesh.position.set(-0.02, 5, 7);
     mesh.rotation.y = Math.PI / 2;
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -135,9 +140,33 @@ loader.load('fonts/caveat_regular.json', function (font) {
     const shadowMesh = new THREE.Mesh(textGeo, shadowMaterial);
     shadowMesh.position.set(-0.02, 5, 9);
     shadowMesh.rotation.y = Math.PI / 2;
+
     scene.add(shadowMesh);
     scene.add(mesh);
+
+    // Функция для анимации смены цвета
+    function animateColor() {
+        setTimeout(() => {
+            // Двойное мигание
+            textMaterial.color.setHex(0xffffff); // Вспышка белого цвета
+            setTimeout(() => {
+                textMaterial.color.setHex(colors[colorIndex]); // Возвращение к исходному цвету
+                setTimeout(() => {
+                    textMaterial.color.setHex(0xffffff); // Вспышка белого цвета
+                    setTimeout(() => {
+                        // Смена цвета на следующий в массиве
+                        colorIndex = (colorIndex + 1) % colors.length;
+                        textMaterial.color.setHex(colors[colorIndex]);
+                        // Повтор анимации через 2 секунды
+                        animateColor();
+                    }, 100);
+                }, 100);
+            }, 100);
+        }, 4000);
+    }
+    animateColor();
 });
+
 
 
 // Jpg Bruegel
@@ -200,8 +229,6 @@ function createTextPanel(scene) {
         const panelMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
         const panelMesh = new THREE.Mesh(panelGeometry, panelMaterial);
         panelMesh.add(textMesh);
-        textMesh.castShadow = true;
-        textMesh.receiveShadow = true;
         panelMesh.position.set(8.3, 4, -5.95);
         scene.add(panelMesh);
         panelMesh.castShadow = true;
@@ -341,7 +368,7 @@ function createAluminumCan(scene) {
 createAluminumCan(scene)
 
 // Ibri logo
-let mesh;
+let ibri;
 const loaderIbri = new FontLoader();
 loaderIbri.load('fonts/commissioner-extrabold-regular.json', function (font) {
     const textGeo = new TextGeometry('Ibri', {
@@ -355,26 +382,41 @@ loaderIbri.load('fonts/commissioner-extrabold-regular.json', function (font) {
     });
     textGeo.center();
     const textMaterial = new THREE.MeshPhongMaterial({ color: 0xffb7b4, specular: 0xffffff });
-    mesh = new THREE.Mesh(textGeo, textMaterial);
-    mesh.position.set(6, 2.7, -1);
-    mesh.castShadow = true
-    scene.add(mesh);
-    animate();
+    ibri = new THREE.Mesh(textGeo, textMaterial);
+    ibri.position.set(6, 2.7, -1);
+    ibri.castShadow = true
+    scene.add(ibri);
+
+    ibri.callback = function () {
+        window.open('https://drinkibri.ru/', '_blank');
+    };
 });
 
 
 // Light
-const light1 = new THREE.DirectionalLight(0xffffff, 3);
-light1.castShadow = true
-light1.position.set(40, 60, 10);
-scene.add(light1);
-
+// const light1 = new THREE.DirectionalLight(0xffffff, 3);
+// light1.castShadow = true
+// light1.position.set(40, 60, 10);
+// scene.add(light1);
 
 // const light2 = new THREE.DirectionalLight(0xffffff, 3);
 // light2.castShadow = true
 // light2.position.set(5, 35, 50);
 // scene.add(light2);
 
+const sphere2 = new THREE.SphereGeometry( 0.1, 16, 20 );
+const light2 = new THREE.PointLight( 0xffffff, 50 );
+light2.add( new THREE.Mesh( sphere2, new THREE.MeshBasicMaterial( {  } ) ) );
+light2.position.set(4, 6, 4);
+light2.castShadow = true
+scene.add( light2 );
+
+const sphere3 = new THREE.SphereGeometry( 0, 16, 20 );
+const light3 = new THREE.PointLight( 0xffffff, 50 );
+light3.add( new THREE.Mesh( sphere3, new THREE.MeshBasicMaterial( {  } ) ) );
+light3.position.set(6, 6, -1);
+light3.castShadow = true
+scene.add( light3 );
 
 // scene.fog = new THREE.Fog(0xffc8d2, 0.3, 30);
 
@@ -401,7 +443,7 @@ function animateStars() {
         if (x < -10) {  // Если звезда выходит за пределы видимости с левой стороны
             x = 10; // Сбрасываем её на правую сторону
             positions.setY(i, (Math.random() - 0.5) * 15); // Случайная y-позиция
-            positions.setZ(i, (Math.random() - 0.5) * 40); // Случайная z-позиция
+            positions.setZ(i, (Math.random() - 0.5) * 100); // Случайная z-позиция
         }
         positions.setX(i, x);
     }
@@ -412,6 +454,46 @@ function animateStars() {
 }
 animateStars();
 
+// Функция для генерации случайного числа в заданном диапазоне
+function getRandomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+// Генерация массива с восемью случайными точками
+const points2 = Array.from({ length: 8 }, () => ({
+    x: getRandomInRange(-2, 8),
+    z: getRandomInRange(-4, 10)
+}));
+
+let currentPoint = 0; // Индекс текущей точки
+const speed = 0.01; // Скорость перемещения
+
+function animateLight2() {
+    // Получаем текущую и следующую точки
+    const startPoint = points2[currentPoint];
+    const endPoint = points2[(currentPoint + 1) % points2.length];
+
+    // Вычисляем направление движения
+    const direction = {
+        x: endPoint.x - light2.position.x,
+        z: endPoint.z - light2.position.z
+    };
+
+    // Вычисляем расстояние до следующей точки
+    const distance = Math.sqrt(direction.x * direction.x + direction.z * direction.z);
+
+    // Если расстояние меньше скорости, двигаем к следующей точке
+    if (distance < speed) {
+        light2.position.x = endPoint.x;
+        light2.position.z = endPoint.z;
+        currentPoint = (currentPoint + 1) % points2.length;
+    } else {
+        // Нормализуем направление и перемещаем light2
+        light2.position.x += (direction.x / distance) * speed;
+        light2.position.z += (direction.z / distance) * speed;
+    }
+}
+
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
@@ -420,11 +502,36 @@ function animate() {
     // scene.fog.near = 5 + Math.sin(time) * 5;
     // scene.fog.far = 30 + Math.cos(time) * 5;
    
-    if (mesh) {
-        mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.01);
+    if (ibri) {
+        ibri.rotateOnAxis(new THREE.Vector3(0, 1, 0), 0.01);
+    }
+    animateLight2()
+}
+
+// Raycaster for detecting mouse clicks
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+function onMouseClick(event) {
+    // Calculate mouse position in normalized device coordinates
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    // Update the raycaster with the camera and mouse position
+    raycaster.setFromCamera(mouse, camera);
+    // Calculate objects intersecting the picking ray
+    const intersects = raycaster.intersectObjects(scene.children);
+    if (intersects.length > 0) {
+        // Call the callback if the mesh is clicked
+        if (intersects[0].object === ibri) {
+            ibri.callback();
+        }
     }
 }
 
+
+
+
+// Add event listener to handle mouse clicks
+window.addEventListener('click', onMouseClick, false);
 
 if (WebGL.isWebGL2Available()) {
     animate();
