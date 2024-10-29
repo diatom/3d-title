@@ -26,6 +26,20 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
 controls.dampingFactor = 0.25;
 controls.screenSpacePanning = false; // Prevents panning in screen space
+// Установите пределы для вертикального вращения (полярный угол)
+controls.minPolarAngle = Math.PI / 4; // Минимальный угол (например, 45 градусов)
+controls.maxPolarAngle = Math.PI / 2.2; // Максимальный угол (например, 90 градусов)
+// Установите пределы для горизонтального вращения (азимутальный угол)
+controls.minAzimuthAngle = Math.PI / 8; // Левая граница поворота (например, -45 градусов)
+controls.maxAzimuthAngle = Math.PI / 2;  // Правая граница поворота (например, 45 градусов)
+// Другие параметры OrbitControls, если нужно
+// controls.enableDamping = true; // Плавность вращения
+controls.dampingFactor = 0.05; // Скорость затухания
+controls.enableZoom = true;    // Включить или отключить приближение
+controls.enablePan = false;    // Отключить смещение камеры
+controls.minDistance = 5;  // Минимальное расстояние (ближе нельзя)
+controls.maxDistance = 20; // Максимальное расстояние (дальше нельзя)
+
 
 starsGroup = new THREE.Group();
 createStars(300);
@@ -265,10 +279,10 @@ function createTableLegs() {
     const tabletopRadius = 1.8;
     const tabletopThickness = 0.1;
     const tabletopGeometry = new THREE.CylinderGeometry(tabletopRadius, tabletopRadius, tabletopThickness, radialSegments);
-    const tabletopMaterial = new THREE.MeshPhongMaterial({
+    const tabletopMaterial = new THREE.MeshLambertMaterial({
         color: 0xFFFFFF,
         transparent: true,
-        opacity: 0.5,
+        opacity: 0.6,
         side: THREE.DoubleSide // Чтобы грани были видны с обеих сторон
     });
     const tabletop = new THREE.Mesh(tabletopGeometry, tabletopMaterial);
@@ -412,9 +426,9 @@ light2.castShadow = true
 scene.add( light2 );
 
 const sphere3 = new THREE.SphereGeometry( 0, 16, 20 );
-const light3 = new THREE.PointLight( 0xffffff, 50 );
+const light3 = new THREE.PointLight( 0xffffff, 100 );
 light3.add( new THREE.Mesh( sphere3, new THREE.MeshBasicMaterial( {  } ) ) );
-light3.position.set(6, 6, -1);
+light3.position.set(6, 7, -1);
 light3.castShadow = true
 scene.add( light3 );
 
