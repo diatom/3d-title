@@ -166,7 +166,7 @@ function Layout(tit, desc, img, ...chi) {
       // E.script.props({src: `https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js`}),
       // E.script.props({src: `https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/FontLoader.js`}),
       // E.script.props({src: `https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/geometries/TextGeometry.js`}),
-      E.script.props({type: `module`, src: `/browser.mjs`, defer: ``}),
+      E.script.props({type: `module`, src: `/3d.mjs`, defer: ``}),
       // E.script.props({type: `module`, src: `/site.mjs`}),
       a.vac(DEV) && E.script.props({type: `module`, src: l.LIVE_CLIENT}),
     )

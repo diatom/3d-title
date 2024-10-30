@@ -8,12 +8,20 @@ import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 
-let points, starsGroup
+let points, starsGroup, camera
 
-const stars = [];
+// const stars = [];
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.01, 1000);
-camera.position.set(12, 10, 8);
+function createCamera() {
+    const fov = window.innerWidth < 860 ? 75 : 50; // Устанавливаем FOV в зависимости от ширины экрана
+    const aspect = window.innerWidth / window.innerHeight;
+    const near = 0.01;
+    const far = 1000;
+    camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+    // camera.position.set(9, 8, 9);
+    camera.position.set(12, 7, 8);
+}
+createCamera()
 
 const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -21,6 +29,14 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.shadowMap.enabled = true
 renderer.setClearColor(0x000000)
 document.getElementById('container').appendChild(renderer.domElement);
+
+window.addEventListener('resize', () => {
+    // Обновляем размеры рендерера
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    // Обновляем параметры камеры
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix(); // Обновляем матрицу проекции
+});
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
@@ -38,7 +54,7 @@ controls.dampingFactor = 0.05; // Скорость затухания
 controls.enableZoom = true;    // Включить или отключить приближение
 controls.enablePan = false;    // Отключить смещение камеры
 controls.minDistance = 5;  // Минимальное расстояние (ближе нельзя)
-controls.maxDistance = 20; // Максимальное расстояние (дальше нельзя)
+controls.maxDistance = 18; // Максимальное расстояние (дальше нельзя)
 
 
 starsGroup = new THREE.Group();
@@ -98,7 +114,7 @@ function createChessBoard(size, tileSize, lineWidth) {
 }
 // Создаем шахматную доску с объемными плитками и настраиваем ее позицию
 const chessBoard = createChessBoard(20, 1, 0.05); // Размер доски: 8x8 плиток с размером плитки в 1 единицу
-chessBoard.position.set(10, 0, 4); // Установка позиции шахматной доски
+chessBoard.position.set(10, 0, 8); // Установка позиции шахматной доски
 chessBoard.receiveShadow = true
 scene.add(chessBoard);
 
@@ -107,7 +123,7 @@ scene.add(chessBoard);
 // const wallGeometryLeft = new THREE.PlaneGeometry(20, 10);
 // const wallMaterialLeft = new THREE.MeshBasicMaterial({ color: 0xa1abad });
 // const wallMaterialLeft = new THREE.MeshBasicMaterial({ color: 0xd63636 });
-const wallGeometryBack = new THREE.PlaneGeometry(20, 10);
+const wallGeometryBack = new THREE.PlaneGeometry(20, 20);
 const wallMaterialBack = new THREE.MeshStandardMaterial({ color: 0x8c0b0b });
 
 // Left Wall
@@ -118,7 +134,7 @@ const wallMaterialBack = new THREE.MeshStandardMaterial({ color: 0x8c0b0b });
 
 // Back Wall
 const backWall = new THREE.Mesh(wallGeometryBack, wallMaterialBack);
-backWall.position.set(10, 5, -6);
+backWall.position.set(10, 5, -2);
 backWall.rotation.y = 0;
 // backWall.castShadow = true;
 backWall.receiveShadow = true;
@@ -152,7 +168,7 @@ loader.load('fonts/caveat_regular.json', function (font) {
 
     const shadowMaterial = new THREE.ShadowMaterial({ opacity: 0.5 });
     const shadowMesh = new THREE.Mesh(textGeo, shadowMaterial);
-    shadowMesh.position.set(-0.02, 5, 9);
+    shadowMesh.position.set(-0.02, 5, 7);
     shadowMesh.rotation.y = Math.PI / 2;
 
     scene.add(shadowMesh);
@@ -189,7 +205,7 @@ textureLoaderBru.load('images/pic-bruegel.jpg', function(texture) {
     const material = new THREE.MeshStandardMaterial({ map: texture });
     const geometry = new THREE.PlaneGeometry(5, 3.5);
     const plane = new THREE.Mesh(geometry, material);
-    plane.position.set(5, 4, -5.95);
+    plane.position.set(5, 4, -1.95);
     scene.add(plane);
     const frameThickness = 0.1; // Толщина рамки
     const frameColor = 0xffffff;
@@ -200,11 +216,11 @@ textureLoaderBru.load('images/pic-bruegel.jpg', function(texture) {
     const leftFrame = new THREE.Mesh(new THREE.BoxGeometry(frameThickness, 3.5 + frameThickness * 2, 0.3), new THREE.MeshStandardMaterial({ color: frameColor }));
     const rightFrame = new THREE.Mesh(new THREE.BoxGeometry(frameThickness, 3.5 + frameThickness * 2, 0.3), new THREE.MeshStandardMaterial({ color: frameColor }));
     // Позиционирование верхней и нижней рамки
-    topFrame.position.set(5, 4 + (3.5 / 2) + (frameThickness / 2), -5.95);
-    bottomFrame.position.set(5, 4 - (3.5 / 2) - (frameThickness / 2), -5.95);
+    topFrame.position.set(5, 4 + (3.5 / 2) + (frameThickness / 2), -1.95);
+    bottomFrame.position.set(5, 4 - (3.5 / 2) - (frameThickness / 2), -1.95);
     // Позиционирование боковых рамок
-    leftFrame.position.set(5 - (5 / 2) - (frameThickness / 2), 4, -5.95);
-    rightFrame.position.set(5 + (5 / 2) + (frameThickness / 2), 4, -5.95);
+    leftFrame.position.set(5 - (5 / 2) - (frameThickness / 2), 4, -1.95);
+    rightFrame.position.set(5 + (5 / 2) + (frameThickness / 2), 4, -1.95);
     // Добавляем все части рамки в сцену
     scene.add(topFrame);
     scene.add(bottomFrame);
@@ -243,7 +259,7 @@ function createTextPanel(scene) {
         const panelMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
         const panelMesh = new THREE.Mesh(panelGeometry, panelMaterial);
         panelMesh.add(textMesh);
-        panelMesh.position.set(8.3, 4, -5.95);
+        panelMesh.position.set(8.3, 4, -1.95);
         scene.add(panelMesh);
         panelMesh.castShadow = true;
         panelMesh.receiveShadow = true;
@@ -261,10 +277,10 @@ function createTableLegs() {
     const legGeometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radialSegments);
     const legMaterial = new THREE.MeshPhongMaterial({ color: 0x8B4513 }); // Коричневый цвет для имитации дерева
     const positions = [
-        { x: 5.8, y: 0, z: -0.2, rz: 36, ry: -72, rx: -72 }, //нижняя левая
-        { x: 5.8, y: 0, z: -1.8, rz: 36, ry: 72, rx: 72 }, //нижняя правая
-        { x: 4.2, y: 0, z: -0.2, rz: -36, ry: 72, rx: -72 }, //верхняя левая
-        { x: 4.2, y: 0, z: -1.8, rz: -36, ry: -72, rx: 72 } //верхняя правая
+        { x: 5.8, y: 0, z: 3.8, rz: 36, ry: -72, rx: -72 }, //нижняя левая
+        { x: 5.8, y: 0, z: 2.2, rz: 36, ry: 72, rx: 72 }, //нижняя правая
+        { x: 4.2, y: 0, z: 3.8, rz: -36, ry: 72, rx: -72 }, //верхняя левая
+        { x: 4.2, y: 0, z: 2.2, rz: -36, ry: -72, rx: 72 } //верхняя правая
     ];
     positions.forEach(pos => {
         const tableLeg = new THREE.Mesh(legGeometry, legMaterial);
@@ -286,7 +302,7 @@ function createTableLegs() {
         side: THREE.DoubleSide // Чтобы грани были видны с обеих сторон
     });
     const tabletop = new THREE.Mesh(tabletopGeometry, tabletopMaterial);
-    tabletop.position.set(5, height + tabletopThickness / 2, -1);
+    tabletop.position.set(5, height + tabletopThickness / 2, 3);
     scene.add(tabletop);
     tabletop.castShadow = true;
     tabletop.receiveShadow = true;
@@ -303,7 +319,7 @@ function createFrame() {
     const frameGeometry = new THREE.BoxGeometry(width, height, depth);
     const frameMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
     magazine = new THREE.Mesh(frameGeometry, frameMaterial);
-    magazine.position.set(4.5, 2.16, -1);
+    magazine.position.set(4.5, 2.16, 3);
     magazine.rotation.x = Math.PI / -2;
     magazine.rotation.z += Math.PI / 6;
     scene.add(magazine);
@@ -320,7 +336,7 @@ textureLoaderCover.load('images/cover.jpg', function(texture) {
     const plane = new THREE.Mesh(geometry, material);
     plane.castShadow = true;
     plane.receiveShadow = true;
-    plane.position.set(4.5, 2.211, -1)
+    plane.position.set(4.5, 2.211, 3)
     plane.rotation.x = Math.PI / -2;
     plane.rotation.z += Math.PI / 6;
     scene.add(plane);
@@ -374,7 +390,7 @@ function createAluminumCan(scene) {
     bottomCapMesh.rotation.x = Math.PI / 2; // Align the disc horizontally
     bottomCapMesh.position.y = bevelRadius; // Place it at the correct height
     canMesh.add(bottomCapMesh);
-    canMesh.position.set(6, 2.1, -1);
+    canMesh.position.set(6, 2.1, 3);
     scene.add(canMesh);
     canMesh.castShadow = true;
     canMesh.receiveShadow = true;
@@ -397,7 +413,7 @@ loaderIbri.load('fonts/commissioner-extrabold-regular.json', function (font) {
     textGeo.center();
     const textMaterial = new THREE.MeshPhongMaterial({ color: 0xffb7b4, specular: 0xffffff });
     ibri = new THREE.Mesh(textGeo, textMaterial);
-    ibri.position.set(6, 2.7, -1);
+    ibri.position.set(6, 2.7, 3);
     ibri.castShadow = true
     scene.add(ibri);
 
@@ -426,9 +442,9 @@ light2.castShadow = true
 scene.add( light2 );
 
 const sphere3 = new THREE.SphereGeometry( 0, 16, 20 );
-const light3 = new THREE.PointLight( 0xffffff, 100 );
+const light3 = new THREE.PointLight( 0xffffff, 80 );
 light3.add( new THREE.Mesh( sphere3, new THREE.MeshBasicMaterial( {  } ) ) );
-light3.position.set(6, 7, -1);
+light3.position.set(6, 7, 2);
 light3.castShadow = true
 scene.add( light3 );
 
@@ -454,8 +470,8 @@ function animateStars() {
     for (let i = 0; i < count; i++) {
         let x = positions.getX(i);
         x -= 0.005; // Скорость движения звёзд по оси x
-        if (x < -10) {  // Если звезда выходит за пределы видимости с левой стороны
-            x = 10; // Сбрасываем её на правую сторону
+        if (x < -4) {  // Если звезда выходит за пределы видимости с левой стороны
+            x = 4; // Сбрасываем её на правую сторону
             positions.setY(i, (Math.random() - 0.5) * 15); // Случайная y-позиция
             positions.setZ(i, (Math.random() - 0.5) * 100); // Случайная z-позиция
         }
